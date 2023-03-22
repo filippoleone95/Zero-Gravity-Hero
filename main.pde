@@ -38,10 +38,11 @@ int gameState;
 // Dichiaro schermata per il gameover
 GameOver gameOver;
 
-// Renderizzo un nuovo frame dell'asteroide ogni 10 fps del gioco
+// Renderizzo un nuovo frame della navicella ogni 10 fps del gioco
 int[] framesNavicella = {29, 59};
+
 // Renderizzo un nuovo frame dell'asteroide ogni 10 fps del gioco
-int[] framesAsteroide = {9, 19, 29, 39, 49, 59};
+int[] framesAsteroide = {4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59};
 
 void setup() {
   // Dimensione finestra gioco
