@@ -29,11 +29,16 @@ boolean cadutaAsteroide = false;
 int i;
 int j;
 
-// Contatore del frame attuale 
+// Contatore del frame attuale
 int countFrame;
 
 // Dichiaro schermata per il gameover
 GameOver gameOver;
+
+// Renderizzo un nuovo frame dell'asteroide ogni 10 fps del gioco
+int[] framesNavicella = {29, 59};
+// Renderizzo un nuovo frame dell'asteroide ogni 10 fps del gioco
+int[] framesAsteroide = {9, 19, 29, 39, 49, 59};
 
 void setup() {
   // Dimensione finestra gioco
@@ -64,7 +69,7 @@ void setup() {
 
   // Inizializzo la schermata di game over
   gameOver = new GameOver();
-  
+
   // inizializzo il contatore
   countFrame = 0;
 }
@@ -79,7 +84,7 @@ void draw() {
   // Disegno gli ostacoli
   meteorite();
 
-  if(++countFrame == 60) countFrame = 0;
+  if (++countFrame == 60) countFrame = 0;
 }
 
 
@@ -114,13 +119,16 @@ void navicella() {
   navicella = navicelle[j];
   navicella.resize(0, 80);
 
-  if(countFrame == 29 || countFrame == 59) {  
-    if (j<navicelle.length-1) {
-      j++;
-    } else {
-      j=0;
+  for (int index = 0; index < framesNavicella.length; index++) {
+    if (framesNavicella[index] == countFrame) {
+      if (j<navicelle.length-1) {
+        j++;
+      } else {
+        j=0;
+      }
     }
   }
+
   // Disegna la navicella
   image(navicella, naveX, naveY);
 
@@ -141,10 +149,14 @@ void meteorite() {
   asteroide = asteroidi[i];
   asteroide.resize(0, 60);
 
-  if (i<asteroidi.length-1) {
-    i++;
-  } else {
-    i=0;
+  for (int index = 0; index < framesAsteroide.length; index++) {
+    if (framesAsteroide[index] == countFrame) {
+      if (i<asteroidi.length-1) {
+        i++;
+      } else {
+        i=0;
+      }
+    }
   }
 
   // Crea un nuovo oggetto se non è ancora caduto
