@@ -32,13 +32,16 @@ int j;
 // Contatore del frame attuale 
 int countFrame;
 
+//variabile dello stato di gioco
+int gameState;
+
 // Dichiaro schermata per il gameover
 GameOver gameOver;
 
 void setup() {
   // Dimensione finestra gioco
   size(800, 600);
-  //frameRate(30);
+  gameState = 0;
   // Carico le immagini per gli sprite
   asteroidi = Gif.getPImages(this, "assets/ast.gif");
   navicelle = Gif.getPImages(this, "assets/nav.gif");
@@ -56,7 +59,7 @@ void setup() {
   initSky();
 
   // Inizializzo l'array con il primo frame della navicella
-  navicella = navicelle[0];
+  navicella = navicelle[j];
 
   // Iniziallizzo la posizione della navicella
   naveX = width/2 - navicella.width/2;
@@ -70,7 +73,9 @@ void setup() {
 }
 
 void draw() {
-  // Disegno il cielo
+  
+  if (gameState == 0) {
+    // Disegno il cielo
   skyScrolling();
 
   // Disegno la navicella
@@ -80,6 +85,15 @@ void draw() {
   meteorite();
 
   if(++countFrame == 60) countFrame = 0;
+  }
+  
+  else if (gameState == 1){
+    image(meteorite, meteoriteX, meteoriteY);
+    image(asteroide, asteroideX, asteroideY);
+    
+    gameOver.display();
+  }
+  
 }
 
 
@@ -180,21 +194,35 @@ void meteorite() {
 
   // Controlla se la navicella è colpita dalla meteorite
   if (dist(naveX + navicella.width/2, naveY + navicella.height/2, meteoriteX + meteorite.width/2, meteoriteY + meteorite.height/2) < navicella.width/2 + meteorite.width/2) {
-    gameOver.display();
-    // Interrompe il programma
-    noLoop();
-    if (gameOver.buttonPressed()) {
-      // Aggiungi qui la logica per riprovare il gioco
-    }
+    gameState = 1;
   }
 
   // Controlla se la navicella è colpita dall'asteroide
   if (dist(naveX + navicella.width/2, naveY + navicella.height/2, asteroideX + asteroide.width/2, asteroideY + asteroide.height/2) < navicella.width/2 + asteroide.width/2) {
-    gameOver.display();
-    // Interrompe il programma
-    noLoop();
-    if (gameOver.buttonPressed()) {
-      // Aggiungi qui la logica per riprovare il gioco
-    }
+    gameState = 1;
+    
   }
+}
+
+void keyPressed(){
+  if (gameState == 1 && key == ' '){
+    gameState = 0;
+    
+    cadutaMeteorite = false;
+    cadutaAsteroide = false;
+  }
+}
+
+void mousePressed(){
+  if ( gameState == 1 && mouseX >= gameOver.buttonX
+       && mouseX <= gameOver.buttonX + gameOver.buttonWidth
+       && mouseY >= gameOver.buttonY
+       && mouseY <= gameOver.buttonY + gameOver.buttonHeight) {
+         
+        gameState = 0;
+        
+        cadutaMeteorite = false;
+        cadutaAsteroide = false;
+       }
+  
 }
