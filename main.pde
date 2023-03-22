@@ -20,8 +20,8 @@ float asteroideY;
 
 // Dichiaro e inizializzo le rispettive velocità
 float velocitaNave = 3;
-float velocitaMeteorite = 5;
-float velocitaAsteroide = 5;
+float velocitaMeteorite = 2;
+float velocitaAsteroide = 2;
 
 boolean cadutaMeteorite = false;
 boolean cadutaAsteroide = false;
@@ -52,7 +52,7 @@ void setup() {
   asteroidi = Gif.getPImages(this, "assets/ast.gif");
   navicelle = Gif.getPImages(this, "assets/nav.gif");
   meteorite = loadImage("assets/meteorite.png");
-  meteorite.resize(0, 40);
+  meteorite.resize(0, 60);
 
   // Creo il background
   backImg = createImage(800, 600, RGB);
@@ -107,7 +107,7 @@ void draw() {
 void initSky() {
   for (int y=0; y<backImg.height; y++)
     for (int x=0; x<backImg.width; x++) {
-      float r=random(starsR);
+      float r=random(1000);
       if (r<1)
         backImg.pixels[y*backImg.width+x]=color(168, 164, 50);
       else
@@ -188,8 +188,9 @@ void meteorite() {
   }
 
   // Disegna e aggiorna la posizione della meteorite
-  image(meteorite, meteoriteX, meteoriteY);
   meteoriteY += velocitaMeteorite;
+  image(meteorite, meteoriteX, meteoriteY);
+  
 
   // Se la meteorite arriva a terra, crea una nuova meteorite
   if (meteoriteY > height) {
@@ -197,8 +198,9 @@ void meteorite() {
   }
 
   // Disegna e aggiorna la posizione dell'asteroide
-  image(asteroide, asteroideX, asteroideY);
   asteroideY += velocitaAsteroide;
+  image(asteroide, asteroideX, asteroideY);
+  
 
   // Se l'asteroide arriva a terra, crea un nuovo asteroide
   if (asteroideY > height) {
@@ -211,9 +213,8 @@ void meteorite() {
   }
 
   // Controlla se la navicella è colpita dall'asteroide
-  if (dist(naveX + navicella.width/2, naveY + navicella.height/2, asteroideX + asteroide.width/2, asteroideY + asteroide.height/2) < navicella.width/2 + asteroide.width/2) {
-    gameState = 1;
-    
+  if (dist(naveX + navicella.width/2, naveY + navicella.height/2, asteroideX + asteroide.width/3, asteroideY + 2*asteroide.height/3) < navicella.width/3 + asteroide.width/3) {
+    gameState = 1;    
   }
 }
 
