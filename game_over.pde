@@ -1,5 +1,5 @@
 class GameOver {
-  String message = "GAME OVER";
+  String message = "GAME OVER\nPremi spazio per ricominciare";
   PImage restartButton;
   int buttonWidth;
   int buttonHeight;

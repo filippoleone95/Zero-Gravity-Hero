@@ -9,7 +9,8 @@ TO-DO
 - Aggiungere più asteroidi contemporaneamente durante la partita
 - Trovare nuovi Sprite asteroidi
 - Gestire il movimento degli ostacoli sull'asse X
-- Aggiungere rotazione ostacoli su se stessi
+- Aggiungere rotazione ostacoli su se stessi (FILIPPO)
+- Scontornare tutti gli oggetti correttamente (FILIPPO)
 - Gestire la vita del giocare
 - Gestire schermata iniziale gioco
 - Dividere il gioco in stati
