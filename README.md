@@ -26,3 +26,5 @@ Idee malus
 
 - Se colpisci un asteroide
 - Se colpisci un meteorite 
+
+Lavori completati
