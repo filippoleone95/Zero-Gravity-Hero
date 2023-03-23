@@ -3,7 +3,7 @@
 TO-DO
 
 - Aggiungere un contatore per il punteggio
-- Gestire il tasto restart
+- Gestire il tasto restart - Beppe
 - Aggiungere (in qualche modo) animazione sparo alla navicella (come Power-up)
 - Gestire animazione esplosione asteroide
 - Aggiungere più asteroidi contemporaneamente durante la partita
@@ -13,7 +13,7 @@ TO-DO
 - Scontornare tutti gli oggetti correttamente (FILIPPO)
 - Gestire la vita del giocare
 - Gestire schermata iniziale gioco
-- Dividere il gioco in stati
+- Dividere il gioco in stati - Beppe
 - Far comparire (pensare ad un oggetto)
 
 Idee Power-up
