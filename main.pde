@@ -1,12 +1,17 @@
 import gifAnimation.*;
 
 // Dichiaro Sprites
-PImage backImg = createImage(800, 600, RGB);
+PImage backImg;
+
 PImage navicella;
-PImage meteorite;
 PImage[] navicelle;
 PImage asteroide;
 PImage[] asteroidi;
+
+PImage meteorite;
+PImage[] meteoriti;
+
+PImage proiettile;
 
 final int starsR=600;
 
@@ -25,6 +30,13 @@ float velocitaAsteroide = 2;
 
 boolean cadutaMeteorite = false;
 boolean cadutaAsteroide = false;
+
+boolean powerUpProiettili = true;
+boolean voloProiettile = false;
+float proiettileX;
+float proiettileY;
+float velocitaProiettile = 10;
+
 
 int i;
 int j;
@@ -51,8 +63,11 @@ void setup() {
   // Carico le immagini per gli sprite
   asteroidi = Gif.getPImages(this, "assets/ast.gif");
   navicelle = Gif.getPImages(this, "assets/nav.gif");
-  meteorite = loadImage("assets/meteorite.png");
+  meteoriti = Gif.getPImages(this, "assets/MeteoriteDistrutto.gif");
+  meteorite = loadImage("assets/MeteoriteIntero.png");
   meteorite.resize(0, 60);
+  
+  proiettile = loadImage("assets/proiettile.png");
 
   // Creo il background
   backImg = createImage(800, 600, RGB);
@@ -86,23 +101,28 @@ void draw() {
 
   // Disegno la navicella
   navicella();
+  
+  if(powerUpProiettili == true)
+    spara();
 
+  asteroide();
+  
   // Disegno gli ostacoli
   meteorite();
 
-  if(++countFrame == 60) countFrame = 0;
+  if(++countFrame == 60) 
+    countFrame = 0;
   }
   
   else if (gameState == 1){
     image(meteorite, meteoriteX, meteoriteY);
     image(asteroide, asteroideX, asteroideY);
+    image(proiettile,proiettileX, proiettileY);
     
     gameOver.display();
   }
   
 }
-
-
 
 void initSky() {
   for (int y=0; y<backImg.height; y++)
@@ -159,8 +179,7 @@ void navicella() {
   naveY = constrain(naveY, 0, height - navicella.height);
 }
 
-void meteorite() {
-
+void asteroide() {
   asteroide = asteroidi[i];
   asteroide.resize(0, 60);
 
@@ -175,16 +194,37 @@ void meteorite() {
   }
 
   // Crea un nuovo oggetto se non è ancora caduto
-  if (!cadutaMeteorite) {
-    meteoriteX = random(width - meteorite.width);
-    meteoriteY = -meteorite.height;
-    cadutaMeteorite = true;
-  }
-
   if (!cadutaAsteroide) {
     asteroideX = random(width - asteroide.width);
     asteroideY = -asteroide.height;
     cadutaAsteroide = true;
+  }
+  
+  // Disegna e aggiorna la posizione dell'asteroide
+  asteroideY += velocitaAsteroide;
+  image(asteroide, asteroideX, asteroideY);
+  
+
+  // Se l'asteroide arriva a terra, crea un nuovo asteroide
+  if (asteroideY > height)
+    cadutaAsteroide = false;
+  
+  
+  // Controlla se la navicella è colpita dall'asteroide
+  if (dist(naveX + navicella.width/2, naveY + navicella.height/2, asteroideX + asteroide.width/3, asteroideY + 2*asteroide.height/3)
+      < navicella.width/3 + asteroide.width/3)
+    gameState = 1;    
+  
+}
+
+
+void meteorite() {
+
+  // Crea un nuovo oggetto se non è ancora caduto
+  if (!cadutaMeteorite) {
+    meteoriteX = random(width - meteorite.width);
+    meteoriteY = -meteorite.height;
+    cadutaMeteorite = true;
   }
 
   // Disegna e aggiorna la posizione della meteorite
@@ -197,46 +237,58 @@ void meteorite() {
     cadutaMeteorite = false;
   }
 
-  // Disegna e aggiorna la posizione dell'asteroide
-  asteroideY += velocitaAsteroide;
-  image(asteroide, asteroideX, asteroideY);
-  
-
-  // Se l'asteroide arriva a terra, crea un nuovo asteroide
-  if (asteroideY > height) {
-    cadutaAsteroide = false;
-  }
 
   // Controlla se la navicella è colpita dalla meteorite
   if (dist(naveX + navicella.width/2, naveY + navicella.height/2, meteoriteX + meteorite.width/2, meteoriteY + meteorite.height/2) < navicella.width/2 + meteorite.width/2) {
     gameState = 1;
   }
+}
 
-  // Controlla se la navicella è colpita dall'asteroide
-  if (dist(naveX + navicella.width/2, naveY + navicella.height/2, asteroideX + asteroide.width/3, asteroideY + 2*asteroide.height/3) < navicella.width/3 + asteroide.width/3) {
-    gameState = 1;    
+void spara(){
+  
+  if (voloProiettile == false) {
+    proiettileX = naveX + navicella.width/2;
+    proiettileY = naveY;
+    voloProiettile = true;
+    imageMode(CENTER);
+    image(proiettile, proiettileX, proiettileY);
+    imageMode(CORNER);
+  }
+  else {
+    proiettileY-= velocitaProiettile;
+    
+    if(proiettileY <= 0)
+      voloProiettile = false;
+      
+    else {
+      imageMode(CENTER);
+      image(proiettile, proiettileX, proiettileY);
+      imageMode(CORNER);
+
+    }
   }
 }
 
 void keyPressed(){
-  if (gameState == 1 && key == ' '){
-    gameState = 0;
-    
-    cadutaMeteorite = false;
-    cadutaAsteroide = false;
-  }
+  if (gameState == 1 && key == ' ')
+     ricomincia();
 }
 
 void mousePressed(){
   if ( gameState == 1 && mouseX >= gameOver.buttonX
        && mouseX <= gameOver.buttonX + gameOver.buttonWidth
        && mouseY >= gameOver.buttonY
-       && mouseY <= gameOver.buttonY + gameOver.buttonHeight) {
+       && mouseY <= gameOver.buttonY + gameOver.buttonHeight) 
          
-        gameState = 0;
-        
-        cadutaMeteorite = false;
-        cadutaAsteroide = false;
-       }
+    ricomincia();
+       
   
+}
+
+void ricomincia(){
+   gameState = 0;
+  
+  cadutaMeteorite = false;
+  cadutaAsteroide = false;
+  voloProiettile = false;
 }
