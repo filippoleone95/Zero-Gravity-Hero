@@ -79,7 +79,6 @@ void setup() {
   // Carico le immagini per gli sprite
   asteroidi = Gif.getPImages(this, "assets/ast.gif");
   navicelle = Gif.getPImages(this, "assets/nav.gif");
-  //meteoriti = Gif.getPImages(this, "assets/MeteoriteisColpito.gif");
 
 
   proiettile = loadImage("assets/proiettile.png");
