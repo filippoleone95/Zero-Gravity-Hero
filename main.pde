@@ -12,7 +12,6 @@ int score = 0;
 int scoreRaggiunto = 0;
 int maxScore = 0;
 
-
 PImage proiettile;
 
 final int starsR=600;
@@ -20,8 +19,6 @@ final int starsR=600;
 // Dichiaro posizione sprites
 float naveX;
 float naveY;
-//float meteoriteX;
-//float meteoriteY;
 float asteroideX;
 float asteroideY;
 
@@ -38,8 +35,7 @@ float proiettileX;
 float proiettileY;
 float velocitaProiettile = 10;
 
-int bonusVite =0;
-
+int bonusVite = 0;
 
 int i;
 int j;
@@ -52,13 +48,13 @@ int gameState;
 
 // Dichiaro schermata per il gameover
 GameOver gameOver;
-
+Title titolo;
 Vite vite;
 
 Meteorite[] meteoriti;
 int maxMeteoriti = 1;
 
-// Renderizzo un nuovo frame della navicella ogni 10 fps del gioco
+// Renderizzo un nuovo frame della navicella ogni 30 fps del gioco
 int[] framesNavicella = {29, 59};
 
 // Renderizzo un nuovo frame dell'asteroide ogni 10 fps del gioco
@@ -67,10 +63,12 @@ int[] framesAsteroide = {4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59};
 void setup() {
   // Dimensione finestra gioco
   size(800, 600);
-  gameState = 0;
+  gameState = -1;
 
+  titolo = new Title();
   vite = new Vite();
   meteoriti = new Meteorite[10];
+  gameOver = new GameOver();
 
   for (int i = 0; i < meteoriti.length; i++) {
     meteoriti[i] = new Meteorite(this, velocitaMeteorite);
@@ -100,16 +98,16 @@ void setup() {
   naveX = width/2 - navicella.width/2;
   naveY = height - navicella.height - 50;
 
-  // Inizializzo la schermata di game over
-  gameOver = new GameOver();
-
   // inizializzo il contatore
   countFrame = 0;
 }
 
 void draw() {
+  if(gameState == -1){
+    titolo.mostra();
+  }
 
-  if (gameState == 0) {
+  else if (gameState == 0) {
     // Disegno il cielo
     skyScrolling();
 
@@ -120,6 +118,9 @@ void draw() {
       vite.inc(1);  //TODO da gestire per bene il punteggio perché il valore preciso potrebbe essere saltato a causa di oggetti che danno più punti (es. meteorite)
       score++;  //valore incrementato dato che score aumenta ogni 60 frame e quindi avrebbe massimizzato il numero di vite invece che incrementate solo di una
     }
+    
+    if (score > maxScore)
+      maxScore = score;
     
     
     if (powerUpProiettili == true)
@@ -132,6 +133,7 @@ void draw() {
 
     mostraPunteggio();
     vite.mostra();
+    mostraRecord();
 
     if (++countFrame == 60) {
       countFrame = 0;
@@ -267,8 +269,7 @@ void disegnaMeteoriti() {
       if (vite.isInGioco()) {
         //realizzare classe Astronave per far sì che si possa rendere invincibile per pochi secondi
       }
-
-
+      
       gameState = 1;
       return;
     }
@@ -299,7 +300,16 @@ void spara() {
 }
 
 void keyPressed() {
-  if (gameState == 1 && key == ' ')
+  if(gameState == -1){
+    if (titolo.getSelected().equals("GIOCA") && key == ' ')
+      gameState =0;
+    else if(titolo.getSelected().equals("ESCI") && key == ' ')
+      exit();
+    else if (keyCode == UP || keyCode == DOWN)
+      titolo.changeOption();
+  }
+  
+  else if (gameState == 1 && key == ' ')
     ricomincia();
 }
 
@@ -316,6 +326,7 @@ void ricomincia() {
   gameState = 0;
   maxMeteoriti = 1;
   score = 0;
+  vite.setQuantita(bonusVite + 1);
 
   for (int i = 0; i <maxMeteoriti && i < meteoriti.length; i++) {
     meteoriti[i].setVisibile(false);
@@ -325,10 +336,17 @@ void ricomincia() {
 }
 
 void mostraPunteggio() {
-  textAlign(LEFT);
+  textAlign(RIGHT);
   textSize(20);
   fill(255, 255, 255);
-  text("Punteggio: " + score, 10, height - 20);
+  text("Punteggio: " + score, width - 10, height - 30);
+}
+
+void mostraRecord(){
+    textAlign(LEFT);
+    textSize(20);
+    fill(255, 255, 255);
+    text("Record: " + maxScore, 10, height - 30);
 }
 
 void incrementaDifficolta() {

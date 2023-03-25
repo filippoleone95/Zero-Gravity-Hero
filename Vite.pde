@@ -3,11 +3,6 @@ class Vite {
   PImage sprite; 
   boolean inGioco;
   
-  Vite(int bonus){
-    this();
-    this.quantita += bonus;
-  }
-  
   Vite(){
     inGioco = true;
     sprite = loadImage("assets/astronave.png");
@@ -26,18 +21,24 @@ class Vite {
       inGioco = false;
   }
   
-  boolean isInGioco(){
-    return inGioco;
+  void mostra(){
+    for (int i = 0; i < quantita; i++)
+      image(sprite, width - (sprite.width * (i+1)) - 5, height - sprite.height - 3);    
   }
   
-  int getQuantita(){
+  void setQuantita(int vite){
+    this.quantita = vite;
+  }
+  
+   int getQuantita(){
     return quantita;
   }
   
-  void mostra(){
-    for (int i = 0; i < quantita; i++)
-      image(sprite, width - (sprite.width * (i+1)) - 5, height - sprite.height - 3);
-    
+  void setInGioco(boolean inGioco){
+    this.inGioco = inGioco;
   }
   
+   boolean isInGioco(){
+    return inGioco;
+  }
 }

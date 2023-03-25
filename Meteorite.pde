@@ -9,7 +9,7 @@ class Meteorite {
   boolean colpito = false;
   int i = 0;
   int counter = 0;
-  List<Integer> frameEsplosione = Arrays.asList(9, 19, 29, 39, 49, 59);
+  List<Integer> frameEsplosione = Arrays.asList(9, 19, 29, 39, 49, 59);  //Lista e non array per poter sfruttare il metodo contains()
   boolean visibile;
   
   Meteorite(PApplet parent, float velocitaMax){
@@ -54,7 +54,7 @@ class Meteorite {
       }
         
       if ( frameEsplosione.contains(counter++) )
-        sprite = sprites[i++]; //potrebbe servire rallentarla con i frames
+        sprite = sprites[i++]; 
       
       disegna();      
     }

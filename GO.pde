@@ -22,6 +22,8 @@ class GameOver {
     text(message, width/2, height/2 - 100);
     text("premi spazio per ricominciare", width/2, height - 100);
 
+
+
     image(restartButton, buttonX, buttonY);
   }
 }
