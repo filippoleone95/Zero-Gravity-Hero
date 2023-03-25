@@ -2,16 +2,16 @@
 
 TO-DO
 
-- Aggiungere un contatore per il punteggio
+- Aggiungere un contatore per il punteggio - Beppe
 - Gestire il tasto restart - Beppe
-- Aggiungere (in qualche modo) animazione sparo alla navicella (come Power-up)
-- Gestire animazione esplosione asteroide
-- Aggiungere più asteroidi contemporaneamente durante la partita
+- Aggiungere (in qualche modo) animazione sparo alla navicella (come Power-up) - Beppe
+- Gestire animazione esplosione asteroide - Beppe
+- Aggiungere più asteroidi contemporaneamente durante la partita - Beppe
 - Trovare nuovi Sprite asteroidi
-- Gestire il movimento degli ostacoli sull'asse X
+- Gestire il movimento degli ostacoli sull'asse X - Beppe
 - Aggiungere rotazione ostacoli su se stessi (FILIPPO)
 - Scontornare tutti gli oggetti correttamente (FILIPPO)
-- Gestire la vita del giocare
+- Gestire la vita del giocatore
 - Gestire schermata iniziale gioco
 - Dividere il gioco in stati - Beppe
 - Far comparire (pensare ad un oggetto)

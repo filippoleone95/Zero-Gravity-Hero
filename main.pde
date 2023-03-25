@@ -8,6 +8,10 @@ PImage[] navicelle;
 PImage asteroide;
 PImage[] asteroidi;
 
+int score = 0;
+int scoreRaggiunto = 0;
+int maxScore = 0;
+
 
 PImage proiettile;
 
@@ -26,7 +30,6 @@ float velocitaNave = 3;
 float velocitaMeteorite = 2;
 float velocitaAsteroide = 2;
 
-boolean cadutaMeteorite = false;
 boolean cadutaAsteroide = false;
 
 boolean powerUpProiettili = true;
@@ -34,6 +37,8 @@ boolean voloProiettile = false;
 float proiettileX;
 float proiettileY;
 float velocitaProiettile = 10;
+
+int bonusVite =0;
 
 
 int i;
@@ -48,8 +53,10 @@ int gameState;
 // Dichiaro schermata per il gameover
 GameOver gameOver;
 
+Vite vite;
+
 Meteorite[] meteoriti;
-int maxMeteoriti = 2;
+int maxMeteoriti = 1;
 
 // Renderizzo un nuovo frame della navicella ogni 10 fps del gioco
 int[] framesNavicella = {29, 59};
@@ -61,17 +68,19 @@ void setup() {
   // Dimensione finestra gioco
   size(800, 600);
   gameState = 0;
+
+  vite = new Vite();
   meteoriti = new Meteorite[10];
-  
-  for (int i = 0; i < meteoriti.length; i++){
+
+  for (int i = 0; i < meteoriti.length; i++) {
     meteoriti[i] = new Meteorite(this, velocitaMeteorite);
   }
-  
+
   // Carico le immagini per gli sprite
   asteroidi = Gif.getPImages(this, "assets/ast.gif");
   navicelle = Gif.getPImages(this, "assets/nav.gif");
-  //meteoriti = Gif.getPImages(this, "assets/MeteoriteDistrutto.gif");
-  
+  //meteoriti = Gif.getPImages(this, "assets/MeteoriteisColpito.gif");
+
 
   proiettile = loadImage("assets/proiettile.png");
 
@@ -108,20 +117,32 @@ void draw() {
     // Disegno la navicella
     navicella();
 
+    if (score != 0 && score % 30 == 0){
+      vite.inc(1);  //TODO da gestire per bene il punteggio perché il valore preciso potrebbe essere saltato a causa di oggetti che danno più punti (es. meteorite)
+      score++;  //valore incrementato dato che score aumenta ogni 60 frame e quindi avrebbe massimizzato il numero di vite invece che incrementate solo di una
+    }
+    
+    
     if (powerUpProiettili == true)
       spara();
 
     asteroide();
 
     // Disegno gli ostacoli
-    meteorite();
+    disegnaMeteoriti();
 
-    if (++countFrame == 60)
+    mostraPunteggio();
+    vite.mostra();
+
+    if (++countFrame == 60) {
       countFrame = 0;
-  } else if (gameState == 1) {
-    for(int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
-      meteoriti[i].disegna();
+      score++;
       
+    }
+  } else if (gameState == 1) {
+    for (int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
+      meteoriti[i].disegna();
+
     image(asteroide, asteroideX, asteroideY);
     image(proiettile, proiettileX, proiettileY);
 
@@ -222,33 +243,37 @@ void asteroide() {
 }
 
 
-void meteorite() {
-  
-  for(int i = 0; i < maxMeteoriti && i< meteoriti.length; i++) {
-    if (meteoriti[i].visibile == false)
+void disegnaMeteoriti() {
+
+  for (int i = 0; i < maxMeteoriti && i< meteoriti.length; i++) {
+    if (!meteoriti[i].isVisibile())
       meteoriti[i] = new Meteorite(this, velocitaMeteorite);
-    
-    meteoriti[i].disegnaMovimento();   
+
+    meteoriti[i].disegnaMovimento();
   }
-  
-  for(int i = 0; i <maxMeteoriti && i< meteoriti.length; i++) {
-    
-    
-    if(!meteoriti[i].distrutto()  &&  powerUpProiettili && voloProiettile && dist(proiettileX, proiettileY, meteoriti[i].x, meteoriti[i].y) < proiettile.width + meteoriti[i].sprite.width/2){
+
+  for (int i = 0; i <maxMeteoriti && i< meteoriti.length; i++) {
+
+
+    if (!meteoriti[i].isColpito()  &&  powerUpProiettili && voloProiettile && dist(proiettileX, proiettileY, meteoriti[i].x, meteoriti[i].y) < proiettile.width + meteoriti[i].sprite.width/2) {
       meteoriti[i].colpisci();
       voloProiettile = false;
+      score += 2;
     }
-    
+
     // Controlla se la navicella è colpita dalla meteorite
-    if (!meteoriti[i].distrutto()  && dist(naveX + navicella.width/2, naveY + navicella.height/2, meteoriti[i].x, meteoriti[i].y) < navicella.width/2 + meteoriti[i].sprite.width/2) {
+    if (!meteoriti[i].isColpito() && dist(naveX + navicella.width/2, naveY + navicella.height/2, meteoriti[i].x, meteoriti[i].y) < navicella.width/2 + meteoriti[i].sprite.width/2) {
+      vite.dec(1);
+
+      if (vite.isInGioco()) {
+        //realizzare classe Astronave per far sì che si possa rendere invincibile per pochi secondi
+      }
+
+
       gameState = 1;
       return;
     }
-    
-
   }
-
-
 }
 
 void spara() {
@@ -290,8 +315,24 @@ void mousePressed() {
 
 void ricomincia() {
   gameState = 0;
+  maxMeteoriti = 1;
+  score = 0;
 
-  cadutaMeteorite = false;
+  for (int i = 0; i <maxMeteoriti && i < meteoriti.length; i++) {
+    meteoriti[i].setVisibile(false);
+  }
   cadutaAsteroide = false;
   voloProiettile = false;
+}
+
+void mostraPunteggio() {
+  textAlign(LEFT);
+  textSize(20);
+  fill(255, 255, 255);
+  text("Punteggio: " + score, 10, height - 20);
+}
+
+void incrementaDifficolta() {
+  maxMeteoriti++; // TODO da ultimare - alternare velocità e numero - capire dopo quanto tempo/punteggio innalzare la difficoltà
+  velocitaMeteorite++;
 }

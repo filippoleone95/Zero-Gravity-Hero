@@ -56,9 +56,7 @@ class Meteorite {
       if ( frameEsplosione.contains(counter++) )
         sprite = sprites[i++]; //potrebbe servire rallentarla con i frames
       
-      disegna();
-      
-      
+      disegna();      
     }
   }
   
@@ -73,8 +71,15 @@ class Meteorite {
     colpito = true;
   }
   
-  boolean distrutto(){
+  boolean isColpito(){
     return colpito;
   }
   
+  void setVisibile(boolean visibile){
+    this.visibile = visibile;
+  }
+  
+  boolean isVisibile(){
+    return visibile;
+  }
 }
