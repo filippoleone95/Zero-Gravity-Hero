@@ -9,12 +9,12 @@ TO-DO
 - Aggiungere più asteroidi contemporaneamente durante la partita - Beppe
 - Trovare nuovi Sprite asteroidi
 - Gestire il movimento degli ostacoli sull'asse X - Beppe
-- Aggiungere rotazione ostacoli su se stessi (FILIPPO)
-- Scontornare tutti gli oggetti correttamente (FILIPPO)
 - Gestire la vita del giocatore
 - Gestire schermata iniziale gioco
 - Dividere il gioco in stati - Beppe
 - Far comparire (pensare ad un oggetto)
+- Creare classi per ogni sprite (FILIPPO)
+- Gestire creazione Asteroide (FILIPPO)
 
 Idee Power-up
 
@@ -29,3 +29,4 @@ Idee malus
 - Se colpisci un meteorite 
 
 Lavori completati
+- Scontornare tutti gli oggetti correttamente (FILIPPO)
