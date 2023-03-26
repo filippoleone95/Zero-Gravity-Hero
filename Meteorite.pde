@@ -16,6 +16,11 @@ class Meteorite {
     
     this.sprite = loadImage("assets/MeteoriteIntero.png");
     this.sprites = Gif.getPImages(parent, "assets/MeteoriteDistrutto.gif");
+    int size = floor(random(50, 100));
+    
+    sprite.resize(0, size);
+    for (PImage sprite : sprites)
+      sprite.resize(0, (int)(size * 2.53));  // rapporto di grandezza tra sprite e sprites
     
     this.y = -sprite.height/2;
     this.x = random(sprite.width, width - sprite.width);

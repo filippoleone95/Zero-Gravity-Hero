@@ -16,10 +16,13 @@ class GameOver {
   }
 
   void display() {
+    textFont(defaultFont);
     textAlign(CENTER, CENTER);
     textSize(48);
     fill(255, 0, 0);
     text(message, width/2, height/2 - 100);
+    fill(255);
+    textSize(25);
     text("premi spazio per ricominciare", width/2, height - 100);
 
     image(restartButton, buttonX, buttonY);

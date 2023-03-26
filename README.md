@@ -35,3 +35,6 @@ Lavori completati
 - Gestire il tasto restart - Beppe
 - Gestire animazione esplosione meteorite - Beppe
 - Gestire schermata iniziale gioco - Beppe
+- Gestire il movimento degli ostacoli sull'asse X - Beppe
+- Aggiungere più asteroidi contemporaneamente durante la partita - Beppe
+- Dividere il gioco in stati - Beppe

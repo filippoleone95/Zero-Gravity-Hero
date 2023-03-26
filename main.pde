@@ -14,7 +14,7 @@ int maxScore = 0;
 
 PImage proiettile;
 
-final int starsR=600;
+final int starsR=2000;
 
 // Dichiaro posizione sprites
 float naveX;
@@ -65,10 +65,10 @@ void setup() {
   // Dimensione finestra gioco
   size(800, 600);
   gameState = -1;
-  
+
   defaultFont = createFont("Arial", 20);
 
-  titolo = new Title();
+  titolo = new Title(this);
   vite = new Vite();
   meteoriti = new Meteorite[10];
   gameOver = new GameOver();
@@ -106,12 +106,10 @@ void setup() {
 }
 
 void draw() {
-  if(gameState == -1){
+  if (gameState == -1) {
     titolo.mostra();
-  }
+  } else if (gameState == 0) {
 
-  else if (gameState == 0) {
-    
     textFont(defaultFont);
     fill(255);
     // Disegno il cielo
@@ -120,15 +118,15 @@ void draw() {
     // Disegno la navicella
     navicella();
 
-    if (score != 0 && score % 30 == 0){
+    if (score != 0 && score % 30 == 0) {
       vite.inc(1);  //TODO da gestire per bene il punteggio perché il valore preciso potrebbe essere saltato a causa di oggetti che danno più punti (es. meteorite)
       score++;  //valore incrementato dato che score aumenta ogni 60 frame e quindi avrebbe massimizzato il numero di vite invece che incrementate solo di una
     }
-    
+
     if (score > maxScore)
       maxScore = score;
-    
-    
+
+
     if (powerUpProiettili == true)
       spara();
 
@@ -144,7 +142,6 @@ void draw() {
     if (++countFrame == 60) {
       countFrame = 0;
       score++;
-      
     }
   } else if (gameState == 1) {
     for (int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
@@ -160,7 +157,7 @@ void draw() {
 void initSky() {
   for (int y=0; y<backImg.height; y++)
     for (int x=0; x<backImg.width; x++) {
-      float r=random(1000);
+      float r=random(starsR);
       if (r<1)
         backImg.pixels[y*backImg.width+x]=color(168, 164, 50);
       else
@@ -275,7 +272,7 @@ void disegnaMeteoriti() {
       if (vite.isInGioco()) {
         //realizzare classe Astronave per far sì che si possa rendere invincibile per pochi secondi
       }
-      
+
       gameState = 1;
       return;
     }
@@ -306,16 +303,15 @@ void spara() {
 }
 
 void keyPressed() {
-  if(gameState == -1){
-    if (titolo.getSelected().equals("GIOCA") && key == ' ')
-      gameState =0;
-    else if(titolo.getSelected().equals("ESCI") && key == ' ')
+  if (gameState == -1) {
+    if (titolo.getSelected().equals("GIOCA") && key == ' '){
+      gameState = 0;
+    }
+    else if (titolo.getSelected().equals("ESCI") && key == ' ')
       exit();
     else if (keyCode == UP || keyCode == DOWN)
       titolo.changeOption();
-  }
-  
-  else if (gameState == 1 && key == ' ')
+  } else if (gameState == 1 && key == ' ')
     ricomincia();
 }
 
@@ -348,11 +344,11 @@ void mostraPunteggio() {
   text("Punteggio: " + score, width - 10, height - 30);
 }
 
-void mostraRecord(){
-    textAlign(LEFT);
-    textSize(20);
-    fill(255, 255, 255);
-    text("Record: " + maxScore, 10, height - 30);
+void mostraRecord() {
+  textAlign(LEFT);
+  textSize(20);
+  fill(255, 255, 255);
+  text("Record: " + maxScore, 10, height - 30);
 }
 
 void incrementaDifficolta() {
