@@ -40,6 +40,7 @@ int bonusVite = 0;
 int i;
 int j;
 
+PFont defaultFont;
 // Contatore del frame attuale
 int countFrame;
 
@@ -64,6 +65,8 @@ void setup() {
   // Dimensione finestra gioco
   size(800, 600);
   gameState = -1;
+  
+  defaultFont = createFont("Arial", 20);
 
   titolo = new Title();
   vite = new Vite();
@@ -108,6 +111,9 @@ void draw() {
   }
 
   else if (gameState == 0) {
+    
+    textFont(defaultFont);
+    fill(255);
     // Disegno il cielo
     skyScrolling();
 

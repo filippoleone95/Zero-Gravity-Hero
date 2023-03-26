@@ -15,18 +15,22 @@ class Title {
     
     if (selected == 0) {
       fill(255, 255, 0);
+      textSize(45);
       text(options[0], width/2 +20, height/2 - 50);
-      fill(0);
+      fill(255);
+      textSize(40);
       text(options[1], width/2 +20, height/2 + 10);
     }
     else if (selected == 1){
-      fill(0);
+      fill(255);
+      textSize(40);
       text(options[0], width/2 +20, height/2 - 50);
       fill(255, 255, 0);
+      textSize(45);
       text(options[1], width/2 +20, height/2 + 10);
     }
     
-    fill(255);
+    
   }
   
   void changeOption(){
