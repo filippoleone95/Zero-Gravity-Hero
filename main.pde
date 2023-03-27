@@ -4,7 +4,6 @@ import java.util.prefs.*;
 // Dichiaro Sprites
 PImage backImg;
 
-
 PImage asteroide;
 PImage[] asteroidi;
 
@@ -18,7 +17,6 @@ final int starsR=2000;
 
 float asteroideX;
 float asteroideY;
-
 
 float velocitaMeteorite = 2;
 float velocitaAsteroide = 2;
@@ -62,8 +60,6 @@ void setup() {
   // Dimensione finestra gioco
   size(800, 600);
 
-  //Imposto il nome della finestra di gioco
-  surface.setTitle("Zero gravity hero");
 
   gameState = -1;
 
