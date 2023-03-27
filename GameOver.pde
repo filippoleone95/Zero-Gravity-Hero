@@ -5,6 +5,7 @@ class GameOver {
   int buttonHeight;
   int buttonX;
   int buttonY;
+  
 
   GameOver() {
     restartButton = loadImage("assets/restart_button.png");
