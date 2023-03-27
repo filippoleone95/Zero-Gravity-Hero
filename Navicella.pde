@@ -18,10 +18,10 @@ class Navicella {
   int[] framesNavicella = {29, 59};
 
   // Costruttore
-  Navicella(PApplet parent, String imagePath) {
+  Navicella(PApplet parent) {
 
     // Carico le immagini per gli sprite "assets/nav.gif"
-    navicelle = Gif.getPImages(parent, imagePath);
+    navicelle = Gif.getPImages(parent, "assets/nav.gif");
 
     // Variabile che permette di alternare le schermate della navicella
     frame = 0;
