@@ -54,12 +54,14 @@ int maxMeteoriti = 1;
 int[] framesAsteroide = {4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59};
 
 // Definisco un oggetto che contiene i dati che voglio rendere persistenti
-Preferences prefs = Preferences.userRoot().node(this.getClass().getName());
+Preferences prefs = Preferences.userRoot().node("ZeroGravityHero");
 
 void setup() {
   // Dimensione finestra gioco
   size(800, 600);
 
+  //Imposto il nome della finestra di gioco
+  surface.setTitle("Zero gravity hero");
 
   gameState = -1;
 
@@ -69,7 +71,7 @@ void setup() {
   vite = new Vite();
   meteoriti = new Meteorite[10];
   gameOver = new GameOver();
-  navicella = new Navicella(this, "assets/nav.gif");
+  navicella = new Navicella(this);
 
   for (int i = 0; i < meteoriti.length; i++) {
     meteoriti[i] = new Meteorite(this, velocitaMeteorite);
@@ -90,7 +92,7 @@ void setup() {
 
   // inizializzo il contatore
   countFrame = 0;
-  
+
   // Leggo il punteggio record dalle preferenze
   maxScore = prefs.getInt("maxScore", 0);
 }
