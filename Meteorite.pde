@@ -66,7 +66,6 @@ class Meteorite {
   }
   
   void disegna(){
-    
     imageMode(CENTER);
     image(sprite, x, y);
     imageMode(CORNER);
