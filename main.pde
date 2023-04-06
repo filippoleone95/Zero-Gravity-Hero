@@ -49,6 +49,8 @@ int maxMeteoriti = 1;
 int frameWidth = 0;
 int frameHeight = 0;
 
+int numDisegnoAst = 0;
+
 // Definisco un oggetto che contiene i dati che voglio rendere persistenti
 Preferences prefs = Preferences.userRoot().node("ZeroGravityHero");
 
@@ -121,15 +123,29 @@ void draw() {
     if (powerUpProiettili == true)
       navicella.spara();
 
-    asteroide.disegnaAsteroide(frameWidth, frameHeight);
-    
-        // Controlla se la navicella è colpita dall'asteroide
-    if (dist(navicella.naveX + navicella.getWidthNav()/2, navicella.naveY + navicella.getHeightNav()/2, asteroide.getX() + asteroide.getWidth()/3, asteroide.getY() + 2*asteroide.getHeight()/3)
-      < navicella.getWidthNav()/3 + asteroide.getWidth()/3)
-      gameState = 1;
+    if (asteroide.getY() > 658) numDisegnoAst = 0;
+
+    // se restituisce true, l'asteroide va da destra verso sinistra
+    boolean flip = asteroide.disegnaAsteroide(frameWidth, frameHeight, velocitaAsteroide);
+
+    // Controlla se la navicella è colpita dall'asteroide
+    if (flip) {
+      if (dist(navicella.naveX + navicella.getWidthNav()/2, navicella.naveY + navicella.getHeightNav()/2, asteroide.getX() + asteroide.getWidth()/3, asteroide.getY() + 2*asteroide.getHeight()/3)
+        < navicella.getWidthNav()/3 + asteroide.getWidth()/3)
+        gameState = 1;
+    } else {
+      if
+        (dist(navicella.naveX + navicella.getWidthNav()/2, navicella.naveY + navicella.getHeightNav()/2, asteroide.getX() - asteroide.getWidth()/3, asteroide.getY() + 2*asteroide.getHeight()/3)
+        < navicella.getWidthNav()/3 + asteroide.getWidth()/3)
+        gameState = 1;
+    }
 
     // Disegno gli ostacoli
     disegnaMeteoriti();
+
+    //stroke(0, 255, 0);
+    //strokeWeight(10);
+    //point((navicella.naveX + navicella.getWidthNav()/2), (navicella.naveY + navicella.getHeightNav()/2));
 
     mostraPunteggio();
     vite.mostra();
@@ -138,18 +154,18 @@ void draw() {
     if (++countFrame == 60) {
       countFrame = 0;
       score++;
-    }  
+    }
   }
   // Il giocatore ha perso, mostro GameOver
   else if (gameState == 1) {
-    
+
     for (int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
-      meteoriti[i].disegna();
+      //meteoriti[i].disegna();
 
-    image(asteroide.getPimage(), asteroide.getX(), asteroide.getY());
-    image(proiettile, proiettileX, proiettileY);
+      //image(asteroide.getPimage(), asteroide.getX(), asteroide.getY());
+      //image(proiettile, proiettileX, proiettileY);
 
-    gameOver.display();
+      gameOver.display();
   }
 }
 
