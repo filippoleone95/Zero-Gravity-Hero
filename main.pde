@@ -110,9 +110,8 @@ void draw() {
     // Disegno la navicella
     navicella.disegnaNavicella();
 
-    if (score != 0 && score % 30 == 0) {
+    if (score != 0 && score % 30 == 0 && countFrame == 30) {
       vite.inc(1);  //TODO da gestire per bene il punteggio perché il valore preciso potrebbe essere saltato a causa di oggetti che danno più punti (es. meteorite)
-      score++;  //valore incrementato dato che score aumenta ogni 60 frame e quindi avrebbe massimizzato il numero di vite invece che incrementate solo di una
     }
 
     if (score > maxScore) {
