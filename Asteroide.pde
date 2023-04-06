@@ -26,7 +26,7 @@ class Asteroide {
     flip = random(50);
   }
 
-  boolean disegnaAsteroide(int frameWidth, int frameHeight, float velocitaAsteroide) {
+  boolean disegnaAsteroide(float velocitaAsteroide) {
     asteroide = asteroidi[this.i];
     asteroide.resize(0, 60);
 
@@ -49,10 +49,10 @@ class Asteroide {
 
       if (flip < 25)
         //asteroide va da destra verso sinistra
-        asteroideX = random(330, frameWidth - asteroide.width);
+        asteroideX = random(330, width - asteroide.width);
       else
         //asteroide va da sinistra verso destra
-        asteroideX = random(frameWidth - 330);
+        asteroideX = random(width - 330);
 
       asteroideY = -asteroide.height;
       cadutaAsteroide = true;
@@ -61,13 +61,13 @@ class Asteroide {
     // Agguirna e disegna la posizione dell'asteroide
     asteroideY += velocitaAsteroide;
     if (flip < 25) {
-      asteroideX -= 1;
+      asteroideX -= 2;
       image(asteroide, asteroideX, asteroideY);
     } else {
       pushMatrix();
       scale(-1, 1);
       image(asteroide, -asteroideX, asteroideY);
-      asteroideX += 1;
+      asteroideX += 2;
       popMatrix();
     }
 

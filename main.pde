@@ -1,5 +1,6 @@
 import gifAnimation.*;
 import java.util.prefs.*;
+import processing.sound.*;
 
 // Oggetto che gestisce la creazione e visualizzazione del background
 PImage backImg;
@@ -13,12 +14,12 @@ PImage proiettile;
 final int starsR=2000;
 
 // Velocità asteroide da passare alla funzione per disegnare l'asteroide
-float velocitaMeteorite = 2;
+float velocitaMeteorite = 5;
 
 // Velocità asteroide da passare alla funzione per disegnare l'asteroide
-float velocitaAsteroide = 2;
+float velocitaAsteroide = 4;
 
-boolean powerUpProiettili = true;
+boolean powerUpProiettili = false;
 boolean voloProiettile = false;
 float proiettileX;
 float proiettileY;
@@ -42,14 +43,19 @@ Title titolo;
 Vite vite;
 Navicella navicella;
 Asteroide asteroide;
+PowerUp powerUp;
 
 Meteorite[] meteoriti;
-int maxMeteoriti = 1;
+int maxMeteoriti = 10;
 
 int frameWidth = 0;
 int frameHeight = 0;
 
-int numDisegnoAst = 0;
+int caricatoreProiettili;
+boolean powerUpVisibile;
+
+
+SoundFile songIntro;
 
 // Definisco un oggetto che contiene i dati che voglio rendere persistenti
 Preferences prefs = Preferences.userRoot().node("ZeroGravityHero");
@@ -73,6 +79,10 @@ void setup() {
   gameOver = new GameOver();
   navicella = new Navicella(this);
   asteroide = new Asteroide(this);
+  powerUp = new PowerUp();
+  
+  songIntro = new SoundFile(this, "gameSong.mp3");
+  songIntro.play();
 
   for (int i = 0; i < meteoriti.length; i++) {
     meteoriti[i] = new Meteorite(this, velocitaMeteorite);
@@ -120,13 +130,20 @@ void draw() {
     }
 
 
-    if (powerUpProiettili == true)
-      navicella.spara();
+    if ( (powerUp.getPowerUpX() + (powerUp.getPowerUpWidth() / 2)) > navicella.naveX && (powerUp.getPowerUpY() + powerUp.getPowerUpHeight()) > navicella.naveY ) {
+      powerUpProiettili = true;
+      caricatoreProiettili = 50;
+      powerUpVisibile = true;
+    }
 
-    if (asteroide.getY() > 658) numDisegnoAst = 0;
+    if (powerUpProiettili == true && caricatoreProiettili > 0)
+    {
+      caricatoreProiettili--;
+      navicella.spara();
+    }
 
     // se restituisce true, l'asteroide va da destra verso sinistra
-    boolean flip = asteroide.disegnaAsteroide(frameWidth, frameHeight, velocitaAsteroide);
+    boolean flip = asteroide.disegnaAsteroide(velocitaAsteroide);
 
     // Controlla se la navicella è colpita dall'asteroide
     if (flip) {
@@ -155,11 +172,13 @@ void draw() {
       countFrame = 0;
       score++;
     }
+
+    powerUp.disegnaPowerUp(frameWidth, frameHeight);
   }
   // Il giocatore ha perso, mostro GameOver
   else if (gameState == 1) {
-
-    for (int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
+    
+    //for (int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
       //meteoriti[i].disegna();
 
       //image(asteroide.getPimage(), asteroide.getX(), asteroide.getY());
@@ -230,6 +249,7 @@ void keyPressed() {
   if (gameState == -1) {
     if (titolo.getSelected().equals("GIOCA") && key == ' ') {
       gameState = 0;
+      songIntro.stop();
     } else if (titolo.getSelected().equals("ESCI") && key == ' ')
       exit();
     else if (keyCode == UP || keyCode == DOWN)
@@ -249,7 +269,7 @@ void mousePressed() {
 
 void ricomincia() {
   gameState = 0;
-  maxMeteoriti = 1;
+  maxMeteoriti = 10;
   score = 0;
   vite.setQuantita(bonusVite + 1);
 
