@@ -46,7 +46,7 @@ Asteroide asteroide;
 PowerUp powerUp;
 
 Meteorite[] meteoriti;
-int maxMeteoriti = 10;
+int maxMeteoriti = 1;
 
 int frameWidth = 0;
 int frameHeight = 0;
@@ -268,7 +268,7 @@ void mousePressed() {
 
 void ricomincia() {
   gameState = 0;
-  maxMeteoriti = 10;
+  maxMeteoriti = 1;
   score = 0;
   vite.setQuantita(bonusVite + 1);
 

@@ -12,6 +12,7 @@ class Asteroide {
   float asteroideY;
 
   boolean cadutaAsteroide = false;
+  int dimensioneAsteroide;
 
   int i;
   float flip;
@@ -24,11 +25,12 @@ class Asteroide {
     this.asteroidi = Gif.getPImages(parent, "assets/ast.gif");
     this.i = 0;
     flip = random(50);
+    dimensioneAsteroide = (int)random(100, 151);
   }
 
   boolean disegnaAsteroide(float velocitaAsteroide) {
     asteroide = asteroidi[this.i];
-    asteroide.resize(0, 60);
+    asteroide.resize(0, dimensioneAsteroide);
 
     // Incremento la variabile i che conta il frame da stampare a schermo, se ho raggiunto l'ultimo frame, resetto la variabile i
     for (int index = 0; index < framesAsteroide.length; index++) {
@@ -56,6 +58,7 @@ class Asteroide {
 
       asteroideY = -asteroide.height;
       cadutaAsteroide = true;
+      dimensioneAsteroide = (int)random(100, 201);
     }
 
     // Agguirna e disegna la posizione dell'asteroide
