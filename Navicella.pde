@@ -61,6 +61,10 @@ class Navicella {
 
     // Disegna la navicella
     image(navicella, naveX, naveY);
+    //noFill();
+    //stroke(255);
+    //strokeWeight(3);
+    //rect(naveX, naveY, navicella.width, navicella.height);
 
     // Aggiorna la posizione della navicella
     if (keyPressed && keyCode == RIGHT) {
