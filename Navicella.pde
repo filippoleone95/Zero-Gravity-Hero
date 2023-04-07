@@ -1,31 +1,33 @@
 import java.util.List;
 
 class Navicella {
-  
+
   Proiettile proiettile;
 
   PImage sprite;
   PImage[] navicelle;
 
   // Dichiaro posizione sprites
-  float x,y;
+  float x, y;
 
   int frame;
-  
+
   int counter = 0;
 
   // Dichiaro e inizializzo le rispettive velocità
   float velocita = 3;
 
-  float getX(){
+  int counterPowerUpVelocita = 0;
+
+  float getX() {
     return this.x;
   }
-  
-  float getY(){
+
+  float getY() {
     return this.y;
   }
-  
-  PImage getSprite(){
+
+  PImage getSprite() {
     return this.sprite;
   }
 
@@ -34,7 +36,7 @@ class Navicella {
 
     // Carico le immagini per gli sprite "assets/nav.gif"
     navicelle = Gif.getPImages(parent, "assets/nav.gif");
-    
+
     //Imposto la dimensione di ogni sprite a 80
     for (PImage navicella : navicelle)
       navicella.resize(0, 80);
@@ -48,22 +50,22 @@ class Navicella {
     // Iniziallizzo la posizione della navicella
     this.x = width/2 - sprite.width/2;
     this.y = height - sprite.height - 50;
-    
+
     proiettile = new Proiettile();
   }
 
   void disegnaNavicella() {
 
-    this.sprite = navicelle[frame];    
-    
+    this.sprite = navicelle[frame];
+
     if (counter++ % 30 == 29) {
-        if (frame < navicelle.length-1) {
-          frame++;
-        } else {
-          frame=0;
-        }
+      if (frame < navicelle.length-1) {
+        frame++;
+      } else {
+        frame=0;
+      }
     }
-    
+
     if (counter == 60)
       counter = 0;
 
@@ -73,10 +75,17 @@ class Navicella {
     // Aggiorna la posizione della navicella
     if (keyPressed && keyCode == RIGHT) {
       this.x += this.velocita;
+      if (counterPowerUpVelocita != 0)
+        this.x += 3;
     } else if (keyPressed && keyCode == LEFT) {
       this.x -= this.velocita;
+      if (counterPowerUpVelocita != 0)
+        this.x -= 3;
     }
 
+    if (powerUp != null && --counterPowerUpVelocita <0){
+      counterPowerUpVelocita = 0;
+    }
     // Limita la posizione della navicella all'interno della finestra
     this.x = constrain(x, 0, width - sprite.width);
     this.y = constrain(y, 0, height - sprite.height);
@@ -87,24 +96,29 @@ class Navicella {
 
     //spara sempre - da ottimizzare con la variabile attivo
     if (!proiettile.isInVolo()) {
-      proiettile.setX(this.x + sprite.width/2);
+      proiettile.setX(this.x + this.sprite.width/2);
       proiettile.setY(this.y);
       proiettile.setInVolo(true);
       proiettile.disegna();
-    } 
-    else {
+      suoniAndFX.playFire();
+      proiettile.caricatore--;
+    } else {
       proiettile.muovi();
 
-      if (proiettile.getY() <= 0)
+      if (proiettile.getY() <= 0) {
         proiettile.setInVolo(false);
+        if (proiettile.caricatore == 0){
+          proiettile.setAttivo(false);
+        }
 
-      else {
-        proiettile.disegna();
+      }
+      proiettile.disegna();
+        
       }
     }
-  }
   
-  Proiettile getProiettile(){
+
+  Proiettile getProiettile() {
     return this.proiettile;
   }
 }

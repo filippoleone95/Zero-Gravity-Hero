@@ -8,7 +8,7 @@ class Proiettile{
   int caricatore = 0;
   
   Proiettile(){
-    sprite = loadImage("assets/proiettile.png");
+    sprite = loadImage("assets/proiettileNuovo.png");
   }
   
   PImage getSprite(){
