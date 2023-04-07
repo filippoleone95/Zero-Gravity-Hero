@@ -44,8 +44,9 @@ int maxMeteoriti = 1;
 int caricatoreProiettili;
 boolean powerUpVisibile;
 
-
 SoundFile songIntro;
+
+int elapsedSeconds = 0;
 
 // Definisco un oggetto che contiene i dati che voglio rendere persistenti
 Preferences prefs = Preferences.userRoot().node("ZeroGravityHero");
@@ -86,7 +87,7 @@ void setup() {
 
   // Leggo il punteggio record dalle preferenze
   maxScore = prefs.getInt("maxScore", 0);
-
+  
   suoniAndFX.playSongMenu();
 }
 
@@ -105,7 +106,7 @@ void draw() {
     // Disegno la navicella
     navicella.disegnaNavicella();
 
-    if (score != 0 && score % 100 == 0 && countFrame == 30) {
+    if (elapsedSeconds != 0 && elapsedSeconds % 50 == 0 && countFrame == 30) {
       vite.inc(1);  //TODO da gestire per bene il punteggio perché il valore preciso potrebbe essere saltato a causa di oggetti che danno più punti (es. meteorite)
     }
 
@@ -150,6 +151,7 @@ void draw() {
     if (++countFrame == 60) {
       countFrame = 0;
       score++;
+      elapsedSeconds++;
     }
   }
   // Il giocatore ha perso, mostro GameOver
@@ -246,10 +248,8 @@ void keyPressed() {
   // GESTIONE SUONI
   if (key == ',') {
     suoniAndFX.decrementVolume();
-    print("Volume : " + suoniAndFX.volumeState +  " ");
   } else if (key == '.') {
     suoniAndFX.incrementVolume();
-    print("Volume : " + suoniAndFX.volumeState +  " ");
   } else if (key == 'm' && suoniAndFX.muted == false) {
     suoniAndFX.muteSounds();
   } else if (key == 'm' && suoniAndFX.muted == true) {
@@ -273,6 +273,8 @@ void ricomincia() {
   maxMeteoriti = 1;
   score = 0;
   vite.setQuantita(1);
+  elapsedSeconds = 0;
+  countFrame = 0;
 
   for (int i = 0; i <maxMeteoriti && i < meteoriti.length; i++) {
     meteoriti[i].setVisibile(false);

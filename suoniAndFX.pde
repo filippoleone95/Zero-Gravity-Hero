@@ -1,6 +1,8 @@
 import processing.sound.*;
 
 class SuoniAndFX {
+  
+  Preferences prefs = Preferences.userRoot().node("ZeroGravityHero");
 
   SoundFile songMenu;
   SoundFile songGame;
@@ -11,7 +13,7 @@ class SuoniAndFX {
   SoundFile fire;
   SoundFile powerUp;
 
-  int volumeState = 3; // Valore iniziale del volume
+  int volumeState; // Valore iniziale del volume
   boolean muted = false;
 
   SuoniAndFX(PApplet parent) {
@@ -22,6 +24,8 @@ class SuoniAndFX {
     this.meteoriteExplosion = new SoundFile(parent, "meteoriteExplosion.wav");
     this.fire = new SoundFile(parent, "fire.mp3");
     this.powerUp = new SoundFile(parent, "powerUp.wav");
+    this.volumeState = prefs.getInt("volumeState", 3);
+    this.muted = prefs.getBoolean("muted", false);
   }
 
   void playSongMenu() {
@@ -87,11 +91,13 @@ class SuoniAndFX {
     this.fire.stop();
     this.powerUp.stop();
     this.muted = true;
+    prefs.putBoolean("muted", muted);
   }
 
   void decrementVolume() {
     this.volumeState = max(0, suoniAndFX.volumeState - 1);
     setVolume();
+    prefs.putInt("volumeState", volumeState);
   }
 
   void incrementVolume() {
@@ -100,6 +106,7 @@ class SuoniAndFX {
     }
     this.volumeState = min(5, suoniAndFX.volumeState + 1);
     setVolume();
+    prefs.putInt("volumeState", volumeState);
   }
 
   void setVolume() {
@@ -119,5 +126,6 @@ class SuoniAndFX {
     if (gameState == -1) songMenu.loop();
     else if (gameState == 0) songGame.loop();
     this.muted = false;
+    prefs.putBoolean("muted", muted);
   }
 }
