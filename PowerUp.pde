@@ -5,15 +5,15 @@ class PowerUp {
 
   PowerUp () {
     this.powerUp = loadImage("assets/PowerUp.png");
-    powerUpX = random(powerUp.width + 10, (frameWidth - powerUp.width) - 10);
+    powerUpX = random(powerUp.width + 10, (width - powerUp.width) - 10);
     powerUpY = -powerUp.height;
   }
 
-  void disegnaPowerUp(int frameWidth, int frameHeight) {
+  void disegna() {
 
-    if (this.powerUpY > frameHeight) {
+    if (this.powerUpY > height) {
       powerUpY = -powerUp.height;
-      powerUpX = random(powerUp.width + 10, (frameWidth - powerUp.width) - 10);
+      powerUpX = random(powerUp.width + 10, (width - powerUp.width) - 10);
     }
 
     powerUpY += valocitaPowerUp;

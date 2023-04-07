@@ -9,7 +9,9 @@ class Meteorite {
   boolean colpito = false;
   int i = 0;
   int counter = 0;
-  List<Integer> frameEsplosione = Arrays.asList(9, 19, 29, 39, 49, 59);  //Lista e non array per poter sfruttare il metodo contains()
+  int spawnCounter = 0;
+  int spawnTime;
+
   boolean visibile;
 
   Meteorite(PApplet parent, float velocitaMax) {
@@ -34,16 +36,22 @@ class Meteorite {
       this.angolo = random(-PI/6, 0) ;
 
     this.velocita = random(2, velocitaMax);
+    
+    this.spawnTime = floor(random(120, 240));
+    
   }
 
-  void disegnaMovimento() {
+  void disegna() {
 
+    if (spawnCounter++ < spawnTime)
+      return;
+          
     if (!colpito) {
 
       x+= velocita*sin(angolo);
       y+= velocita*cos(angolo);
 
-      disegna();
+      disegnaStatico();
 
       // se l'immagine esce dallo schermo in basso || a sinistra || a destra
       if (y > height + sprite.height/2 || x < 0 - sprite.width/2 || x > width + sprite.width/2)
@@ -54,15 +62,15 @@ class Meteorite {
         visibile = false;
         return;
       }
-
-      if ( frameEsplosione.contains(counter++) )
+      //cambio sprite ogni 10 frame 
+      if ( counter++ % 10 == 9 )
         sprite = sprites[i++];
 
-      disegna();
+      disegnaStatico();
     }
   }
 
-  void disegna() {
+  void disegnaStatico() {
     imageMode(CENTER);
     image(sprite, x, y);
     imageMode(CORNER);

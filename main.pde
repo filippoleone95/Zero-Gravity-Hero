@@ -9,26 +9,16 @@ int score = 0;
 int scoreRaggiunto = 0;
 int maxScore = 0;
 
-PImage proiettile;
-
 final int starsR=2000;
 
-// Velocità asteroide da passare alla funzione per disegnare l'asteroide
-float velocitaMeteorite = 5;
+// Velocità da passare nella creazione del meteorite
+float maxVelocitaMeteorite = 5;
 
 // Velocità asteroide da passare alla funzione per disegnare l'asteroide
 float velocitaAsteroide = 4;
 
-boolean powerUpProiettili = false;
-boolean voloProiettile = false;
-float proiettileX;
-float proiettileY;
-float velocitaProiettile = 10;
-
-int bonusVite = 0;
-
-int i;
-//int j;
+final boolean DESTRA = true;
+final boolean SINISTRA = false;
 
 PFont defaultFont;
 // Contatore del frame attuale
@@ -45,12 +35,11 @@ Navicella navicella;
 Asteroide asteroide;
 PowerUp powerUp;
 SuoniAndFX suoniAndFX;
+Proiettile proiettile;
 
 Meteorite[] meteoriti;
 int maxMeteoriti = 1;
 
-int frameWidth = 0;
-int frameHeight = 0;
 
 int caricatoreProiettili;
 boolean powerUpVisibile;
@@ -64,8 +53,6 @@ Preferences prefs = Preferences.userRoot().node("ZeroGravityHero");
 void setup() {
   // Dimensione finestra gioco
   size(800, 600);
-  frameWidth = width;
-  frameHeight = height;
 
   //Imposto il nome della finestra di gioco
   surface.setTitle("Zero gravity hero");
@@ -79,20 +66,17 @@ void setup() {
   meteoriti = new Meteorite[10];
   gameOver = new GameOver();
   navicella = new Navicella(this);
-  asteroide = new Asteroide(this);
+  proiettile = navicella.getProiettile();
+
   powerUp = new PowerUp();
   suoniAndFX = new SuoniAndFX(this);
 
   for (int i = 0; i < meteoriti.length; i++) {
-    meteoriti[i] = new Meteorite(this, velocitaMeteorite);
+    meteoriti[i] = new Meteorite(this, maxVelocitaMeteorite);
   }
-
-  proiettile = loadImage("assets/proiettile.png");
 
   // Creo il background
   backImg = createImage(800, 600, RGB);
-
-  i = 0;
 
   // Inizializzo il cielo
   initSky();
@@ -116,10 +100,12 @@ void draw() {
     // Disegno il cielo
     skyScrolling();
 
+    powerUp.disegna();
+
     // Disegno la navicella
     navicella.disegnaNavicella();
 
-    if (score != 0 && score % 30 == 0 && countFrame == 30) {
+    if (score != 0 && score % 100 == 0 && countFrame == 30) {
       vite.inc(1);  //TODO da gestire per bene il punteggio perché il valore preciso potrebbe essere saltato a causa di oggetti che danno più punti (es. meteorite)
     }
 
@@ -130,45 +116,34 @@ void draw() {
     }
 
 
-    if ( (powerUp.getPowerUpX() + (powerUp.getPowerUpWidth() / 2)) > navicella.naveX && (powerUp.getPowerUpY() + powerUp.getPowerUpHeight()) > navicella.naveY ) {
-      powerUpProiettili = true;
-      caricatoreProiettili = 50;
-      powerUpVisibile = true;
+    //if ( (powerUp.getPowerUpX() + (powerUp.getPowerUpWidth() / 2)) > navicella.getX() && (powerUp.getPowerUpY() + powerUp.getPowerUpHeight()) > navicella.getY() ) {
+    //  powerUpProiettili = true;
+    //  caricatoreProiettili = 50;
+    //  powerUpVisibile = true;
+    //}
+
+    //if (powerUpProiettili == true && caricatoreProiettili > 0)
+    //{
+    //  caricatoreProiettili--;
+    //  navicella.spara();
+    //}
+
+    //TODO BISOGNA RICREARE OGNI TOT TEMPO UN NUOVO OGGETTO ASTEROIDE ASTEROIDE
+
+    if (score != 0 && score % 15 == 0 && countFrame == 30){
+      asteroide = new Asteroide(this, velocitaAsteroide);
+      asteroide.disegna();
+      
+      if (velocitaAsteroide < 9)
+        velocitaAsteroide += 0.5;
     }
-
-    if (powerUpProiettili == true && caricatoreProiettili > 0)
-    {
-      caricatoreProiettili--;
-      navicella.spara();
-    }
-
-    // se restituisce true, l'asteroide va da destra verso sinistra
-    boolean flip = asteroide.disegnaAsteroide(velocitaAsteroide);
-
-    // Controlla se la navicella è colpita dall'asteroide
-    if (flip) {
-      if (dist(navicella.naveX + navicella.getWidthNav()/2, navicella.naveY + navicella.getHeightNav()/2, asteroide.getX() + asteroide.getWidth()/3, asteroide.getY() + 2*asteroide.getHeight()/3)
-        < navicella.getWidthNav()/3 + asteroide.getWidth()/3) {
-        gameState = 1;
-        suoniAndFX.stopSongGame();
-        suoniAndFX.asteroidCollision();
-      }
-    } else {
-      if
-        (dist(navicella.naveX + navicella.getWidthNav()/2, navicella.naveY + navicella.getHeightNav()/2, asteroide.getX() - asteroide.getWidth()/3, asteroide.getY() + 2*asteroide.getHeight()/3)
-        < navicella.getWidthNav()/3 + asteroide.getWidth()/3) {
-        gameState = 1;
-        suoniAndFX.stopSongGame();
-        suoniAndFX.asteroidCollision();
-      }
-    }
-
-    // Disegno gli ostacoli
+    
+    else if (asteroide != null && asteroide.isVisibile()){
+      asteroide.disegna();
+      // Controlla se la navicella è colpita dall'asteroide
+      verificaCollisioneAsteroide();
+  }
     disegnaMeteoriti();
-
-    //stroke(0, 255, 0);
-    //strokeWeight(10);
-    //point((navicella.naveX + navicella.getWidthNav()/2), (navicella.naveY + navicella.getHeightNav()/2));
 
     mostraPunteggio();
     vite.mostra();
@@ -178,17 +153,18 @@ void draw() {
       countFrame = 0;
       score++;
     }
-
-    powerUp.disegnaPowerUp(frameWidth, frameHeight);
   }
   // Il giocatore ha perso, mostro GameOver
   else if (gameState == 1) {
 
-    //for (int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
-    //meteoriti[i].disegna();
+    for (int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
+      meteoriti[i].disegnaStatico();
+      
+    if (asteroide != null && asteroide.isVisibile())
+      asteroide.disegnaStatico();
 
-    //image(asteroide.getPimage(), asteroide.getX(), asteroide.getY());
-    //image(proiettile, proiettileX, proiettileY);
+    proiettile.disegna();
+
     gameOver.display();
   }
 }
@@ -223,22 +199,22 @@ void disegnaMeteoriti() {
 
   for (int i = 0; i < maxMeteoriti && i< meteoriti.length; i++) {
     if (!meteoriti[i].isVisibile())
-      meteoriti[i] = new Meteorite(this, velocitaMeteorite);
+      meteoriti[i] = new Meteorite(this, maxVelocitaMeteorite);
 
-    meteoriti[i].disegnaMovimento();
+    meteoriti[i].disegna();
   }
 
   for (int i = 0; i <maxMeteoriti && i< meteoriti.length; i++) {
 
-    if (!meteoriti[i].isColpito() && powerUpProiettili && voloProiettile && dist(proiettileX, proiettileY, meteoriti[i].x, meteoriti[i].y) < proiettile.width + meteoriti[i].sprite.width/2) {
-      suoniAndFX.meteoriteExplosion();
+    if (!meteoriti[i].isColpito() && proiettile.isAttivo() && proiettile.isInVolo() && dist(proiettile.getX(), proiettile.getY(), meteoriti[i].x, meteoriti[i].y) < proiettile.sprite.width + meteoriti[i].sprite.width/2) {
       meteoriti[i].colpisci();
-      voloProiettile = false;
+      proiettile.setInVolo(false);
       score += 2;
     }
 
     // Controlla se la navicella è colpita dalla meteorite
-    if (!meteoriti[i].isColpito() && dist(navicella.naveX + navicella.getWidthNav()/2, navicella.naveY + navicella.getHeightNav()/2, meteoriti[i].x, meteoriti[i].y) < navicella.getWidthNav()/2 + meteoriti[i].sprite.width/2) {
+    if (!meteoriti[i].isColpito() && dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().width/2, meteoriti[i].x, meteoriti[i].y)
+      < navicella.getSprite().width/2 + meteoriti[i].sprite.width/2) {
       vite.dec(1);
       
       //funzione da richiamare quando si muore perché stoppa la musica
@@ -297,13 +273,15 @@ void ricomincia() {
   gameState = 0;
   maxMeteoriti = 1;
   score = 0;
-  vite.setQuantita(bonusVite + 1);
+  vite.setQuantita(1);
 
   for (int i = 0; i <maxMeteoriti && i < meteoriti.length; i++) {
     meteoriti[i].setVisibile(false);
   }
-  asteroide.setCadutaAsteroide(false);
-  voloProiettile = false;
+  if(asteroide != null && asteroide.isVisibile())
+    asteroide.setVisibile(false);
+    
+  proiettile.setInVolo(false);
 }
 
 void mostraPunteggio() {
@@ -322,5 +300,18 @@ void mostraRecord() {
 
 void incrementaDifficolta() {
   maxMeteoriti++; // TODO da ultimare - alternare velocità e numero - capire dopo quanto tempo/punteggio innalzare la difficoltà
-  velocitaMeteorite++;
+  maxVelocitaMeteorite++;
+}
+
+void verificaCollisioneAsteroide() {
+
+  if (asteroide.getDirezione() == SINISTRA) {
+    if (dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().height/2, asteroide.getX() + asteroide.getSprite().width/4, asteroide.getY() + 3*asteroide.getSprite().height/4)
+      < navicella.getSprite().width/3 + asteroide.getSprite().width/4)
+      gameState = 1;
+  } else {
+    if (dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().height/2, asteroide.getX() + 3*asteroide.getSprite().width/4, asteroide.getY() + 3*asteroide.getSprite().height/4)
+      < navicella.getSprite().width/3 + asteroide.getSprite().width/4)
+      gameState = 1;
+  }
 }
