@@ -18,3 +18,4 @@ DA IMPLEMENTARE
 - Incrementare gradualmente velocità navicella
 - Ultimare classe powerUp
 - Gestione delle vite (ogni quanto aumentarle e gestione invincibilità dopo un colpo non mortale)
+- Aggiungere modifica volume musica

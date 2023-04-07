@@ -44,6 +44,7 @@ Vite vite;
 Navicella navicella;
 Asteroide asteroide;
 PowerUp powerUp;
+SuoniAndFX suoniAndFX;
 
 Meteorite[] meteoriti;
 int maxMeteoriti = 1;
@@ -80,9 +81,7 @@ void setup() {
   navicella = new Navicella(this);
   asteroide = new Asteroide(this);
   powerUp = new PowerUp();
-  
-  songIntro = new SoundFile(this, "gameSong.mp3");
-  songIntro.play();
+  suoniAndFX = new SuoniAndFX(this);
 
   for (int i = 0; i < meteoriti.length; i++) {
     meteoriti[i] = new Meteorite(this, velocitaMeteorite);
@@ -103,6 +102,8 @@ void setup() {
 
   // Leggo il punteggio record dalle preferenze
   maxScore = prefs.getInt("maxScore", 0);
+
+  suoniAndFX.playSongMenu();
 }
 
 void draw() {
@@ -147,13 +148,19 @@ void draw() {
     // Controlla se la navicella è colpita dall'asteroide
     if (flip) {
       if (dist(navicella.naveX + navicella.getWidthNav()/2, navicella.naveY + navicella.getHeightNav()/2, asteroide.getX() + asteroide.getWidth()/3, asteroide.getY() + 2*asteroide.getHeight()/3)
-        < navicella.getWidthNav()/3 + asteroide.getWidth()/3)
+        < navicella.getWidthNav()/3 + asteroide.getWidth()/3) {
         gameState = 1;
+        suoniAndFX.stopSongGame();
+        suoniAndFX.asteroidCollision();
+      }
     } else {
       if
         (dist(navicella.naveX + navicella.getWidthNav()/2, navicella.naveY + navicella.getHeightNav()/2, asteroide.getX() - asteroide.getWidth()/3, asteroide.getY() + 2*asteroide.getHeight()/3)
-        < navicella.getWidthNav()/3 + asteroide.getWidth()/3)
+        < navicella.getWidthNav()/3 + asteroide.getWidth()/3) {
         gameState = 1;
+        suoniAndFX.stopSongGame();
+        suoniAndFX.asteroidCollision();
+      }
     }
 
     // Disegno gli ostacoli
@@ -176,14 +183,13 @@ void draw() {
   }
   // Il giocatore ha perso, mostro GameOver
   else if (gameState == 1) {
-    
+
     //for (int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
-      //meteoriti[i].disegna();
+    //meteoriti[i].disegna();
 
-      //image(asteroide.getPimage(), asteroide.getX(), asteroide.getY());
-      //image(proiettile, proiettileX, proiettileY);
-
-      gameOver.display();
+    //image(asteroide.getPimage(), asteroide.getX(), asteroide.getY());
+    //image(proiettile, proiettileX, proiettileY);
+    gameOver.display();
   }
 }
 
@@ -225,6 +231,7 @@ void disegnaMeteoriti() {
   for (int i = 0; i <maxMeteoriti && i< meteoriti.length; i++) {
 
     if (!meteoriti[i].isColpito() && powerUpProiettili && voloProiettile && dist(proiettileX, proiettileY, meteoriti[i].x, meteoriti[i].y) < proiettile.width + meteoriti[i].sprite.width/2) {
+      suoniAndFX.meteoriteExplosion();
       meteoriti[i].colpisci();
       voloProiettile = false;
       score += 2;
@@ -233,7 +240,10 @@ void disegnaMeteoriti() {
     // Controlla se la navicella è colpita dalla meteorite
     if (!meteoriti[i].isColpito() && dist(navicella.naveX + navicella.getWidthNav()/2, navicella.naveY + navicella.getHeightNav()/2, meteoriti[i].x, meteoriti[i].y) < navicella.getWidthNav()/2 + meteoriti[i].sprite.width/2) {
       vite.dec(1);
-
+      
+      //funzione da richiamare quando si muore perché stoppa la musica
+      suoniAndFX.meteoriteCollision();
+      
       if (vite.isInGioco()) {
         //realizzare classe Astronave per far sì che si possa rendere invincibile per pochi secondi
       }
@@ -248,13 +258,30 @@ void keyPressed() {
   if (gameState == -1) {
     if (titolo.getSelected().equals("GIOCA") && key == ' ') {
       gameState = 0;
-      songIntro.stop();
+      suoniAndFX.stopSongMenu();
+      suoniAndFX.playSongGame();
     } else if (titolo.getSelected().equals("ESCI") && key == ' ')
       exit();
     else if (keyCode == UP || keyCode == DOWN)
       titolo.changeOption();
-  } else if (gameState == 1 && key == ' ')
+  } else if (gameState == 1 && key == ' ') {
     ricomincia();
+    suoniAndFX.playSongGame();
+  }
+  
+  // GESTIONE SUONI
+  if (key == ',') {
+    suoniAndFX.decrementVolume();
+  } else if (key == '.') {
+    suoniAndFX.incrementVolume();
+  } else if (key == 'm' && suoniAndFX.muted == false) {
+    suoniAndFX.muteSounds();
+    suoniAndFX.muted = true;
+  } else if (key == 'm' && suoniAndFX.muted == true) {
+    suoniAndFX.unmuteSounds(gameState);
+    suoniAndFX.muted = false;
+  }
+  // GESTIONE SUONI
 }
 
 void mousePressed() {
