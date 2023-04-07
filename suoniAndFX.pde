@@ -48,14 +48,12 @@ class SuoniAndFX {
 
   void asteroidCollision() {
     if (!muted) {
-      this.songGame.stop();
       this.asteroidCollision.play();
     }
   }
 
   void meteoriteCollision() {
     if (!muted) {
-      this.songGame.stop();
       this.meteoriteCollision.play();
     }
   }

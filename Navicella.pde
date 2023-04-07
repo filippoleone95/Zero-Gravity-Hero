@@ -1,31 +1,37 @@
 import java.util.List;
 
 class Navicella {
-  
+
   Proiettile proiettile;
 
   PImage sprite;
   PImage[] navicelle;
 
   // Dichiaro posizione sprites
-  float x,y;
+  float x, y;
 
   int frame;
-  
+
   int counter = 0;
 
   // Dichiaro e inizializzo le rispettive velocità
   float velocita = 3;
+  
+  int lastToggleTime;
+  boolean isRed = false;
+  boolean isFlashing = false;
+  int isColpita = 0;
+  int startLampeggio = 0;
 
-  float getX(){
+  float getX() {
     return this.x;
   }
-  
-  float getY(){
+
+  float getY() {
     return this.y;
   }
-  
-  PImage getSprite(){
+
+  PImage getSprite() {
     return this.sprite;
   }
 
@@ -34,7 +40,7 @@ class Navicella {
 
     // Carico le immagini per gli sprite "assets/nav.gif"
     navicelle = Gif.getPImages(parent, "assets/nav.gif");
-    
+
     //Imposto la dimensione di ogni sprite a 80
     for (PImage navicella : navicelle)
       navicella.resize(0, 80);
@@ -48,27 +54,50 @@ class Navicella {
     // Iniziallizzo la posizione della navicella
     this.x = width/2 - sprite.width/2;
     this.y = height - sprite.height - 50;
-    
+
     proiettile = new Proiettile();
   }
 
   void disegnaNavicella() {
 
-    this.sprite = navicelle[frame];    
-    
+    this.sprite = navicelle[frame];
+
     if (counter++ % 30 == 29) {
-        if (frame < navicelle.length-1) {
-          frame++;
-        } else {
-          frame=0;
-        }
+      if (frame < navicelle.length-1) {
+        frame++;
+      } else {
+        frame=0;
+      }
     }
-    
+
     if (counter == 60)
       counter = 0;
+      
+    if(isColpita == 1) {
+      // tempo da un lampeggio ad un altro
+      lastToggleTime = millis();
+      // tempo dall'inizio del lampeggio
+      startLampeggio = millis();
+      isFlashing = true;
+      isColpita = 0;
+    }
+      
+    if (isFlashing) {
+      if (millis() - lastToggleTime > 300) {
+        isRed = !isRed;
+        lastToggleTime = millis();
+      }
+    }
 
+    if (millis() - startLampeggio > 3000) {
+      isFlashing = false;
+      isRed = false;
+    }
+
+    tint(isRed ? color(255, 0, 0) : color(255));
     // Disegna la navicella
     image(this.sprite, this.x, this.y);
+    tint(color(255));
 
     // Aggiorna la posizione della navicella
     if (keyPressed && keyCode == RIGHT) {
@@ -91,8 +120,7 @@ class Navicella {
       proiettile.setY(this.y);
       proiettile.setInVolo(true);
       proiettile.disegna();
-    } 
-    else {
+    } else {
       proiettile.muovi();
 
       if (proiettile.getY() <= 0)
@@ -103,8 +131,8 @@ class Navicella {
       }
     }
   }
-  
-  Proiettile getProiettile(){
+
+  Proiettile getProiettile() {
     return this.proiettile;
   }
 }

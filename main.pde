@@ -48,6 +48,9 @@ SoundFile songIntro;
 
 int elapsedSeconds = 0;
 
+boolean isInvincibile = false;
+int startInvincibile = 0;
+
 // Definisco un oggetto che contiene i dati che voglio rendere persistenti
 Preferences prefs = Preferences.userRoot().node("ZeroGravityHero");
 
@@ -87,7 +90,7 @@ void setup() {
 
   // Leggo il punteggio record dalle preferenze
   maxScore = prefs.getInt("maxScore", 0);
-  
+
   suoniAndFX.playSongMenu();
 }
 
@@ -214,19 +217,29 @@ void disegnaMeteoriti() {
     }
 
     // Controlla se la navicella è colpita dalla meteorite
-    if (!meteoriti[i].isColpito() && dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().width/2, meteoriti[i].x, meteoriti[i].y)
+    if (!isInvincibile && !meteoriti[i].isColpito() && dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().width/2, meteoriti[i].x, meteoriti[i].y)
       < navicella.getSprite().width/2 + meteoriti[i].sprite.width/2) {
       vite.dec(1);
-
+      isInvincibile = true;
+      startInvincibile = millis();
+      //GESTIRE L'INVINCIBILITA' DELLA NAVICELLA PER QUALCHE SECONDO
+      navicella.isColpita = 1;
       //funzione da richiamare quando si muore perché stoppa la musica
       suoniAndFX.meteoriteCollision();
-
-      if (vite.isInGioco()) {
+      print("Vite  = " + vite.quantita + " ");
+      print("Vite in gioco = " + vite.isInGioco() + "\n");
+      if (!vite.isInGioco()) {
         //realizzare classe Astronave per far sì che si possa rendere invincibile per pochi secondi
+        gameState = 1;
+        suoniAndFX.stopSongGame();
+        isInvincibile = false;
       }
+    }
 
-      gameState = 1;
-      return;
+
+    if (millis() - startInvincibile > 3000 && startInvincibile != 0) {
+      isInvincibile = false;
+      startInvincibile = 0;
     }
   }
 }
@@ -275,6 +288,10 @@ void ricomincia() {
   vite.setQuantita(1);
   elapsedSeconds = 0;
   countFrame = 0;
+  navicella.isColpita = 0;
+  startInvincibile = 0;
+  suoniAndFX.playSongGame();
+  vite.inGioco = true;
 
   for (int i = 0; i <maxMeteoriti && i < meteoriti.length; i++) {
     meteoriti[i].setVisibile(false);
@@ -306,17 +323,38 @@ void incrementaDifficolta() {
 
 void verificaCollisioneAsteroide() {
 
-  if (asteroide.getDirezione() == SINISTRA) {
-    if (dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().height/2, asteroide.getX() + asteroide.getSprite().width/4, asteroide.getY() + 3*asteroide.getSprite().height/4)
-      < navicella.getSprite().width/3 + asteroide.getSprite().width/4) {
-      gameState = 1;
-      suoniAndFX.asteroidCollision();
-    }
-  } else {
-    if (dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().height/2, asteroide.getX() + 3*asteroide.getSprite().width/4, asteroide.getY() + 3*asteroide.getSprite().height/4)
-      < navicella.getSprite().width/3 + asteroide.getSprite().width/4) {
-      gameState = 1;
-      suoniAndFX.asteroidCollision();
+  if (!isInvincibile) {
+    if (asteroide.getDirezione() == SINISTRA) {
+
+      if (dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().height/2, asteroide.getX() + asteroide.getSprite().width/4, asteroide.getY() + 3*asteroide.getSprite().height/4)
+        < navicella.getSprite().width/3 + asteroide.getSprite().width/4) {
+        vite.dec(2);
+        isInvincibile = true;
+        startInvincibile = millis();
+        suoniAndFX.asteroidCollision();
+        navicella.isColpita = 1;
+        if (!vite.isInGioco()) {
+          //realizzare classe Astronave per far sì che si possa rendere invincibile per pochi secondi
+          gameState = 1;
+          suoniAndFX.stopSongGame();
+          isInvincibile = false;
+        }
+      }
+    } else {
+      if (dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().height/2, asteroide.getX() + 3*asteroide.getSprite().width/4, asteroide.getY() + 3*asteroide.getSprite().height/4)
+        < navicella.getSprite().width/3 + asteroide.getSprite().width/4) {
+        vite.dec(2);
+        isInvincibile = true;
+        startInvincibile = millis();
+        suoniAndFX.asteroidCollision();
+        navicella.isColpita = 1;
+        if (!vite.isInGioco()) {
+          //realizzare classe Astronave per far sì che si possa rendere invincibile per pochi secondi
+          gameState = 1;
+          suoniAndFX.stopSongGame();
+          isInvincibile = false;
+        }
+      }
     }
   }
 }

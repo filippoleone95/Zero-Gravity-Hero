@@ -18,31 +18,28 @@ class Asteroide {
   boolean direzione;
 
   Asteroide(PApplet parent, float velocita) {
-    // Carico le immagini per gli sprite
-    this.asteroidi = Gif.getPImages(parent, "assets/ast.gif");
+    setDirezione();
+    
+    if (getDirezione() == DESTRA)
+      this.asteroidi = Gif.getPImages(parent, "assets/astFlip.gif");
+    else this.asteroidi = Gif.getPImages(parent, "assets/ast.gif");
 
     int dimensione = floor(random(100, 201));
 
     for (PImage asteroide : asteroidi)
       asteroide.resize(0, dimensione);
 
-    setDirezione();
-
-    if (getDirezione() == DESTRA)
-      this.asteroidi = riflettiOrizz(this.asteroidi);      
-    
     this.frame = 0;
     this.sprite = asteroidi[frame];
     posiziona();
 
     this.velocita = velocita;
-    
+
     this.counter = 0;
-    
   }
 
   void setDirezione() {
-    
+
     if (floor(random(2)) == 1)
       this.direzione = SINISTRA;
     else
@@ -59,11 +56,11 @@ class Asteroide {
       this.sprite = asteroidi[frame];
       disegnaStatico();
       aggiornaPosizione();
-      
+
       //cambio sprite ogni 5 frame
       if (counter++ % 5 == 4)
         prossimoFrame();
-      
+
       if (counter == 5)
         counter = 0;
     }
@@ -75,7 +72,7 @@ class Asteroide {
 
   void aggiornaPosizione() {
     this.y += this.velocita;
-    
+
     if (getDirezione() == SINISTRA)
       this.x -= this.velocita/2;
     else
@@ -98,15 +95,15 @@ class Asteroide {
     return this.y;
   }
 
-  PImage getSprite(){
+  PImage getSprite() {
     return this.sprite;
   }
 
   void setVisibile(boolean visibile) {
     this.visibile = visibile;
   }
-  
-  boolean isVisibile(){
+
+  boolean isVisibile() {
     return this.visibile;
   }
 
@@ -137,5 +134,4 @@ class Asteroide {
 
     return reverse.toArray(new PImage[reverse.size()]);
   }
- 
 }
