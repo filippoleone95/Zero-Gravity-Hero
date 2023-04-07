@@ -23,6 +23,8 @@ class Navicella {
   int isColpita = 0;
   int startLampeggio = 0;
 
+  int counterPowerUpVelocita = 0;
+
   float getX() {
     return this.x;
   }
@@ -102,10 +104,17 @@ class Navicella {
     // Aggiorna la posizione della navicella
     if (keyPressed && keyCode == RIGHT) {
       this.x += this.velocita;
+      if (counterPowerUpVelocita != 0)
+        this.x += 3;
     } else if (keyPressed && keyCode == LEFT) {
       this.x -= this.velocita;
+      if (counterPowerUpVelocita != 0)
+        this.x -= 3;
     }
 
+    if (powerUp != null && --counterPowerUpVelocita <0){
+      counterPowerUpVelocita = 0;
+    }
     // Limita la posizione della navicella all'interno della finestra
     this.x = constrain(x, 0, width - sprite.width);
     this.y = constrain(y, 0, height - sprite.height);
@@ -116,21 +125,27 @@ class Navicella {
 
     //spara sempre - da ottimizzare con la variabile attivo
     if (!proiettile.isInVolo()) {
-      proiettile.setX(this.x + sprite.width/2);
+      proiettile.setX(this.x + this.sprite.width/2);
       proiettile.setY(this.y);
       proiettile.setInVolo(true);
       proiettile.disegna();
+      suoniAndFX.playFire();
+      proiettile.caricatore--;
     } else {
       proiettile.muovi();
 
-      if (proiettile.getY() <= 0)
+      if (proiettile.getY() <= 0) {
         proiettile.setInVolo(false);
+        if (proiettile.caricatore == 0){
+          proiettile.setAttivo(false);
+        }
 
-      else {
-        proiettile.disegna();
+      }
+      proiettile.disegna();
+        
       }
     }
-  }
+  
 
   Proiettile getProiettile() {
     return this.proiettile;

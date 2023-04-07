@@ -72,10 +72,9 @@ void setup() {
   navicella = new Navicella(this);
   proiettile = navicella.getProiettile();
 
-  powerUp = new PowerUp();
   suoniAndFX = new SuoniAndFX(this);
 
-  for (int i = 0; i < meteoriti.length; i++) {
+  for (int i = 0; i < meteoriti.length && i < maxMeteoriti; i++) {
     meteoriti[i] = new Meteorite(this, maxVelocitaMeteorite);
   }
 
@@ -103,11 +102,19 @@ void draw() {
     fill(255);
     // Disegno il cielo
     skyScrolling();
-
-    powerUp.disegna();
+    
+    if (elapsedSeconds != 0 && elapsedSeconds % 60 == 0)
+      powerUp = new PowerUp();
+      
+      
+    if (powerUp != null && powerUp.isVisibile())
+      powerUp.disegna();
 
     // Disegno la navicella
     navicella.disegnaNavicella();
+    
+    if (proiettile.isAttivo())
+      navicella.spara();
 
     if (elapsedSeconds != 0 && elapsedSeconds % 50 == 0 && countFrame == 30) {
       vite.inc(1);  //TODO da gestire per bene il punteggio perché il valore preciso potrebbe essere saltato a causa di oggetti che danno più punti (es. meteorite)
@@ -119,18 +126,12 @@ void draw() {
       prefs.putInt("maxScore", score);
     }
 
-
-    //if ( (powerUp.getPowerUpX() + (powerUp.getPowerUpWidth() / 2)) > navicella.getX() && (powerUp.getPowerUpY() + powerUp.getPowerUpHeight()) > navicella.getY() ) {
-    //  powerUpProiettili = true;
-    //  caricatoreProiettili = 50;
-    //  powerUpVisibile = true;
-    //}
-
-    //if (powerUpProiettili == true && caricatoreProiettili > 0)
-    //{
-    //  caricatoreProiettili--;
-    //  navicella.spara();
-    //}
+    if (powerUp != null && powerUp.isVisibile() && dist(powerUp.x + powerUp.sprite.width/2, powerUp.y + powerUp.sprite.height/2, navicella.getX() + navicella.sprite.width/2, navicella.getY() + navicella.sprite.height/2)
+      < powerUp.sprite.width/2 + navicella.sprite.width/2){
+       powerUp.performaPowerUp();
+       suoniAndFX.playPowerUp();
+       powerUp.setVisibile(false);
+    }
 
     //TODO BISOGNA RICREARE OGNI TOT TEMPO UN NUOVO OGGETTO ASTEROIDE ASTEROIDE
 
@@ -165,8 +166,9 @@ void draw() {
 
     if (asteroide != null && asteroide.isVisibile())
       asteroide.disegnaStatico();
-
-    proiettile.disegna();
+    
+    if (proiettile.isInVolo())
+      proiettile.disegna();
 
     gameOver.display();
   }
@@ -317,8 +319,9 @@ void mostraRecord() {
 }
 
 void incrementaDifficolta() {
-  maxMeteoriti++; // TODO da ultimare - alternare velocità e numero - capire dopo quanto tempo/punteggio innalzare la difficoltà
-  maxVelocitaMeteorite++;
+  maxMeteoriti++;
+  if(maxVelocitaMeteorite < 8)
+    maxVelocitaMeteorite += 0.3;
 }
 
 void verificaCollisioneAsteroide() {

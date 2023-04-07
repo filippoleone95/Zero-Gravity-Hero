@@ -38,7 +38,7 @@ class Vite {
     this.inGioco = inGioco;
   }
   
-   boolean isInGioco(){
+  boolean isInGioco(){
     return this.inGioco;
   }
 }
