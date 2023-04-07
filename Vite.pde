@@ -10,15 +10,15 @@ class Vite {
   }
   
   void inc(int vite){
-    quantita += vite;
-    if (quantita > maxQuantita)
-      quantita = maxQuantita;
+    this.quantita += vite;
+    if (this.quantita > this.maxQuantita)
+      this.quantita = this.maxQuantita;
   }
   
   void dec(int vite){
-    quantita -= vite;
-    if(quantita <=0)
-      inGioco = false;
+    this.quantita -= vite;
+    if(this.quantita <=0)
+      this.inGioco = false;
   }
   
   void mostra(){
@@ -39,6 +39,6 @@ class Vite {
   }
   
    boolean isInGioco(){
-    return inGioco;
+    return this.inGioco;
   }
 }
