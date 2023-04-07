@@ -130,19 +130,17 @@ void draw() {
 
     //TODO BISOGNA RICREARE OGNI TOT TEMPO UN NUOVO OGGETTO ASTEROIDE ASTEROIDE
 
-    if (score != 0 && score % 15 == 0 && countFrame == 30){
+    if (score != 0 && score % 15 == 0 && countFrame == 30) {
       asteroide = new Asteroide(this, velocitaAsteroide);
       asteroide.disegna();
-      
+
       if (velocitaAsteroide < 9)
         velocitaAsteroide += 0.5;
-    }
-    
-    else if (asteroide != null && asteroide.isVisibile()){
+    } else if (asteroide != null && asteroide.isVisibile()) {
       asteroide.disegna();
       // Controlla se la navicella è colpita dall'asteroide
       verificaCollisioneAsteroide();
-  }
+    }
     disegnaMeteoriti();
 
     mostraPunteggio();
@@ -159,7 +157,7 @@ void draw() {
 
     for (int i = 0; i < maxMeteoriti && i < meteoriti.length; i++)
       meteoriti[i].disegnaStatico();
-      
+
     if (asteroide != null && asteroide.isVisibile())
       asteroide.disegnaStatico();
 
@@ -207,6 +205,7 @@ void disegnaMeteoriti() {
   for (int i = 0; i <maxMeteoriti && i< meteoriti.length; i++) {
 
     if (!meteoriti[i].isColpito() && proiettile.isAttivo() && proiettile.isInVolo() && dist(proiettile.getX(), proiettile.getY(), meteoriti[i].x, meteoriti[i].y) < proiettile.sprite.width + meteoriti[i].sprite.width/2) {
+      suoniAndFX.meteoriteExplosion();
       meteoriti[i].colpisci();
       proiettile.setInVolo(false);
       score += 2;
@@ -216,10 +215,10 @@ void disegnaMeteoriti() {
     if (!meteoriti[i].isColpito() && dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().width/2, meteoriti[i].x, meteoriti[i].y)
       < navicella.getSprite().width/2 + meteoriti[i].sprite.width/2) {
       vite.dec(1);
-      
+
       //funzione da richiamare quando si muore perché stoppa la musica
       suoniAndFX.meteoriteCollision();
-      
+
       if (vite.isInGioco()) {
         //realizzare classe Astronave per far sì che si possa rendere invincibile per pochi secondi
       }
@@ -234,7 +233,6 @@ void keyPressed() {
   if (gameState == -1) {
     if (titolo.getSelected().equals("GIOCA") && key == ' ') {
       gameState = 0;
-      suoniAndFX.stopSongMenu();
       suoniAndFX.playSongGame();
     } else if (titolo.getSelected().equals("ESCI") && key == ' ')
       exit();
@@ -244,22 +242,23 @@ void keyPressed() {
     ricomincia();
     suoniAndFX.playSongGame();
   }
-  
+
   // GESTIONE SUONI
   if (key == ',') {
     suoniAndFX.decrementVolume();
+    print("Volume : " + suoniAndFX.volumeState +  " ");
   } else if (key == '.') {
     suoniAndFX.incrementVolume();
+    print("Volume : " + suoniAndFX.volumeState +  " ");
   } else if (key == 'm' && suoniAndFX.muted == false) {
     suoniAndFX.muteSounds();
-    suoniAndFX.muted = true;
   } else if (key == 'm' && suoniAndFX.muted == true) {
     suoniAndFX.unmuteSounds(gameState);
-    suoniAndFX.muted = false;
   }
   // GESTIONE SUONI
 }
 
+// Da togliere
 void mousePressed() {
   if ( gameState == 1 && mouseX >= gameOver.buttonX
     && mouseX <= gameOver.buttonX + gameOver.buttonWidth
@@ -278,9 +277,9 @@ void ricomincia() {
   for (int i = 0; i <maxMeteoriti && i < meteoriti.length; i++) {
     meteoriti[i].setVisibile(false);
   }
-  if(asteroide != null && asteroide.isVisibile())
+  if (asteroide != null && asteroide.isVisibile())
     asteroide.setVisibile(false);
-    
+
   proiettile.setInVolo(false);
 }
 
@@ -307,11 +306,15 @@ void verificaCollisioneAsteroide() {
 
   if (asteroide.getDirezione() == SINISTRA) {
     if (dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().height/2, asteroide.getX() + asteroide.getSprite().width/4, asteroide.getY() + 3*asteroide.getSprite().height/4)
-      < navicella.getSprite().width/3 + asteroide.getSprite().width/4)
+      < navicella.getSprite().width/3 + asteroide.getSprite().width/4) {
       gameState = 1;
+      suoniAndFX.asteroidCollision();
+    }
   } else {
     if (dist(navicella.getX() + navicella.getSprite().width/2, navicella.getY() + navicella.getSprite().height/2, asteroide.getX() + 3*asteroide.getSprite().width/4, asteroide.getY() + 3*asteroide.getSprite().height/4)
-      < navicella.getSprite().width/3 + asteroide.getSprite().width/4)
+      < navicella.getSprite().width/3 + asteroide.getSprite().width/4) {
       gameState = 1;
+      suoniAndFX.asteroidCollision();
+    }
   }
 }

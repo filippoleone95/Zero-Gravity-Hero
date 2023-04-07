@@ -16,7 +16,7 @@ class SuoniAndFX {
 
   SuoniAndFX(PApplet parent) {
     this.songMenu = new SoundFile(parent, "songMenu.mp3");
-    this.songGame = new SoundFile(parent, "songGame.wav");
+    this.songGame = new SoundFile(parent, "songGame.mp3");
     this.asteroidCollision = new SoundFile(parent, "asteroidCollision.wav");
     this.meteoriteCollision = new SoundFile(parent, "meteoriteCollision.mp3");
     this.meteoriteExplosion = new SoundFile(parent, "meteoriteExplosion.wav");
@@ -26,18 +26,15 @@ class SuoniAndFX {
 
   void playSongMenu() {
     if (!muted) {
-      this.songMenu.play();
+      this.songGame.stop();
       this.songMenu.loop();
     }
   }
 
-  void stopSongMenu() {
-    this.songMenu.stop();
-  }
-
   void playSongGame() {
     if (!muted) {
-      this.songGame.play();
+      this.songMenu.stop();
+      this.songGame.loop();
     }
   }
 
@@ -89,29 +86,38 @@ class SuoniAndFX {
     this.meteoriteExplosion.stop();
     this.fire.stop();
     this.powerUp.stop();
+    this.muted = true;
   }
-  
+
   void decrementVolume() {
-    this.volumeState = max(1, suoniAndFX.volumeState - 1);
+    this.volumeState = max(0, suoniAndFX.volumeState - 1);
     setVolume();
   }
-  
+
   void incrementVolume() {
+    if(muted) {
+      unmuteSounds(gameState);
+    }
     this.volumeState = min(5, suoniAndFX.volumeState + 1);
     setVolume();
   }
-  
+
   void setVolume() {
-    this.songMenu.amp(map(volumeState, 1, 5, 0.2, 1.0));
-    this.songGame.amp(map(volumeState, 1, 5, 0.2, 1.0));
-    this.asteroidCollision.amp(map(volumeState, 1, 5, 0.2, 1.0));
-    this.meteoriteCollision.amp(map(volumeState, 1, 5, 0.2, 1.0));
-    this.fire.amp(map(volumeState, 1, 5, 0.2, 1.0));
-    this.powerUp.amp(map(volumeState, 1, 5, 0.2, 1.0));
+    if (volumeState < 1) {
+      muteSounds();
+    } else {
+      this.songMenu.amp(map(volumeState, 1, 5, 0.2, 1.0));
+      this.songGame.amp(map(volumeState, 1, 5, 0.2, 1.0));
+      this.asteroidCollision.amp(map(volumeState, 1, 5, 0.2, 1.0));
+      this.meteoriteCollision.amp(map(volumeState, 1, 5, 0.2, 1.0));
+      this.fire.amp(map(volumeState, 1, 5, 0.2, 1.0));
+      this.powerUp.amp(map(volumeState, 1, 5, 0.2, 1.0));
+    }
   }
-  
+
   void unmuteSounds(int gameState) {
-     if (gameState == -1) songMenu.play();
-     else if(gameState == 0) songGame.play();
+    if (gameState == -1) songMenu.loop();
+    else if (gameState == 0) songGame.loop();
+    this.muted = false;
   }
 }
