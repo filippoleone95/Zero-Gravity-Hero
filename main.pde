@@ -1,4 +1,4 @@
-import gifAnimation.*;
+import gifAnimation.*; //<>//
 import java.util.prefs.*;
 import processing.sound.*;
 
@@ -229,14 +229,12 @@ void disegnaMeteoriti() {
       vite.dec(1);
       isInvincibile = true;
       startInvincibile = millis();
-      //GESTIRE L'INVINCIBILITA' DELLA NAVICELLA PER QUALCHE SECONDO
+
       navicella.isColpita = 1;
       //funzione da richiamare quando si muore perché stoppa la musica
       suoniAndFX.meteoriteCollision();
-      print("Vite  = " + vite.quantita + " ");
-      print("Vite in gioco = " + vite.isInGioco() + "\n");
       if (!vite.isInGioco()) {
-        //realizzare classe Astronave per far sì che si possa rendere invincibile per pochi secondi
+
         gameState = 1;
         suoniAndFX.stopSongGame();
         isInvincibile = false;
@@ -299,6 +297,12 @@ void ricomincia() {
   startInvincibile = 0;
   suoniAndFX.playSongGame();
   vite.inGioco = true;
+
+  if (powerUp != null) {
+    powerUp.setVisibile(false);
+    powerUp = null;
+  }
+  proiettile.resetCaricatore();
 
   for (int i = 0; i <maxMeteoriti && i < meteoriti.length; i++) {
     meteoriti[i].setVisibile(false);

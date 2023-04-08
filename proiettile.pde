@@ -1,63 +1,68 @@
-class Proiettile{
-  
+class Proiettile {
+
   PImage sprite;
   boolean attivo = false;
   boolean inVolo = false;
   float x, y;
   float velocita = 10;
   int caricatore = 0;
-  
-  Proiettile(){
+
+  Proiettile() {
     sprite = loadImage("assets/proiettileNuovo.png");
   }
-  
-  PImage getSprite(){
+
+  PImage getSprite() {
     return this.sprite;
   }
-  
-  float getX(){
+
+  float getX() {
     return this.x;
   }
-  
-  float getY(){
+
+  float getY() {
     return this.y;
   }
-  
-  float getVelocita(){
+
+  float getVelocita() {
     return this.velocita;
   }
-  
-  boolean isInVolo(){
+
+  boolean isInVolo() {
     return this.inVolo;
   }
-  
-  boolean isAttivo(){
+
+  boolean isAttivo() {
     return this.attivo;
   }
-  
-  void setX(float x){
+
+  void setX(float x) {
     this.x = x;
   }
-  
-  void setY(float y){
+
+  void setY(float y) {
     this.y = y;
   }
-  
-  void setInVolo(boolean inVolo){
+
+  void setInVolo(boolean inVolo) {
     this.inVolo = inVolo;
   }
-  
-  void setAttivo(boolean attivo){
+
+  void setAttivo(boolean attivo) {
     this.attivo = attivo;
   }
-  
-  void disegna(){
-      imageMode(CENTER);
-      image(this.sprite, this.x, this.y);
-      imageMode(CORNER);
+
+  void disegna() {
+    imageMode(CENTER);
+    image(this.sprite, this.x, this.y);
+    imageMode(CORNER);
   }
-  
-  void muovi(){
+
+  void muovi() {
     this.y -= this.velocita;
+  }
+
+  void resetCaricatore() {
+    this.caricatore = 0;
+    this.setAttivo(false);
   }
 }
