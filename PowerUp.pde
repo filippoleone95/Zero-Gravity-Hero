@@ -6,9 +6,6 @@ class PowerUp {
   boolean visibile;
 
   PowerUp() {
-
-    
-   
     this.tipo = floor(random(5));
     this.visibile = true;
 
@@ -39,11 +36,11 @@ class PowerUp {
   }
 
   void disegna() {
-     
+
     image(sprite, this.x, this.y);
     y += velocita;
-    
-    if(this.y > height)
+
+    if (this.y > height)
       this.visibile = false;
   }
 
@@ -55,8 +52,8 @@ class PowerUp {
     return this.x;
   }
 
-  
-  boolean isVisibile(){
+
+  boolean isVisibile() {
     return this.visibile;
   }
 
@@ -76,8 +73,12 @@ class PowerUp {
       break;
 
     case 4:
-      for (Meteorite meteorite : meteoriti)
+      for (Meteorite meteorite : meteoriti) {
+        if (meteorite == null)
+          break;
+
         meteorite.colpisci();
+      }
       suoniAndFX.meteoriteExplosion();
       break;
     }

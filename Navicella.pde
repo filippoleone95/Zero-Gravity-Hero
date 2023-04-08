@@ -116,8 +116,7 @@ class Navicella {
       counterPowerUpVelocita = 0;
     }
     // Limita la posizione della navicella all'interno della finestra
-    this.x = constrain(x, 0, width - sprite.width);
-    this.y = constrain(y, 0, height - sprite.height);
+    this.x = constrain(x, 30, width - sprite.width - 30);//e lode
   }
 
   // per il momento è qui, bisogna capire se spostarlo nei powerUp o altro

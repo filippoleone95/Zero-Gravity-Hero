@@ -102,17 +102,17 @@ void draw() {
     fill(255);
     // Disegno il cielo
     skyScrolling();
-    
+
     if (elapsedSeconds != 0 && elapsedSeconds % 60 == 0)
       powerUp = new PowerUp();
-      
-      
+
+
     if (powerUp != null && powerUp.isVisibile())
       powerUp.disegna();
 
     // Disegno la navicella
     navicella.disegnaNavicella();
-    
+
     if (proiettile.isAttivo())
       navicella.spara();
 
@@ -127,13 +127,18 @@ void draw() {
     }
 
     if (powerUp != null && powerUp.isVisibile() && dist(powerUp.x + powerUp.sprite.width/2, powerUp.y + powerUp.sprite.height/2, navicella.getX() + navicella.sprite.width/2, navicella.getY() + navicella.sprite.height/2)
-      < powerUp.sprite.width/2 + navicella.sprite.width/2){
-       powerUp.performaPowerUp();
-       suoniAndFX.playPowerUp();
-       powerUp.setVisibile(false);
+      < powerUp.sprite.width/2 + navicella.sprite.width/2) {
+      powerUp.performaPowerUp();
+      suoniAndFX.playPowerUp();
+      powerUp.setVisibile(false);
     }
 
     //TODO BISOGNA RICREARE OGNI TOT TEMPO UN NUOVO OGGETTO ASTEROIDE ASTEROIDE
+
+
+    if (elapsedSeconds != 0 && elapsedSeconds % 30 == 0 && countFrame == 30) {
+      incrementaDifficolta();
+    }
 
     if (score != 0 && score % 15 == 0 && countFrame == 30) {
       asteroide = new Asteroide(this, velocitaAsteroide);
@@ -166,7 +171,7 @@ void draw() {
 
     if (asteroide != null && asteroide.isVisibile())
       asteroide.disegnaStatico();
-    
+
     if (proiettile.isInVolo())
       proiettile.disegna();
 
@@ -203,7 +208,7 @@ void skyScrolling() {
 void disegnaMeteoriti() {
 
   for (int i = 0; i < maxMeteoriti && i< meteoriti.length; i++) {
-    if (!meteoriti[i].isVisibile())
+    if (meteoriti[i] == null || !meteoriti[i].isVisibile())
       meteoriti[i] = new Meteorite(this, maxVelocitaMeteorite);
 
     meteoriti[i].disegna();
@@ -320,7 +325,7 @@ void mostraRecord() {
 
 void incrementaDifficolta() {
   maxMeteoriti++;
-  if(maxVelocitaMeteorite < 8)
+  if (maxVelocitaMeteorite < 8)
     maxVelocitaMeteorite += 0.3;
 }
 

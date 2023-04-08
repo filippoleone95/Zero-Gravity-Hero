@@ -17,15 +17,16 @@ class SuoniAndFX {
   boolean muted = false;
 
   SuoniAndFX(PApplet parent) {
-    this.songMenu = new SoundFile(parent, "songMenu.mp3");
+    this.songMenu = new SoundFile(parent, "songMenu.wav");
     this.songGame = new SoundFile(parent, "songGame.mp3");
     this.asteroidCollision = new SoundFile(parent, "asteroidCollision.wav");
     this.meteoriteCollision = new SoundFile(parent, "meteoriteCollision.mp3");
     this.meteoriteExplosion = new SoundFile(parent, "meteoriteExplosion.wav");
     this.fire = new SoundFile(parent, "fire.mp3");
     this.powerUp = new SoundFile(parent, "powerUp.wav");
-    this.volumeState = prefs.getInt("volumeState", 3);
+    this.volumeState = prefs.getInt("volumeState", 1);
     this.muted = prefs.getBoolean("muted", false);
+    setVolume();
   }
 
   void playSongMenu() {
