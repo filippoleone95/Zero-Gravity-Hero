@@ -13,7 +13,7 @@ class PowerUp {
       //proiettili
     case 0:
     case 1:
-      this.sprite = loadImage("assets/powerUpSparo.png");
+      this.sprite = loadImage("assets/PowerUpSparo.png");
       break;
 
       //velocita
