@@ -298,11 +298,13 @@ void ricomincia() {
   suoniAndFX.playSongGame();
   vite.inGioco = true;
 
+
   if (powerUp != null) {
     powerUp.setVisibile(false);
     powerUp = null;
   }
   proiettile.resetCaricatore();
+  navicella.counterPowerUpVelocita = 0;
 
   for (int i = 0; i <maxMeteoriti && i < meteoriti.length; i++) {
     meteoriti[i].setVisibile(false);
@@ -310,7 +312,8 @@ void ricomincia() {
   if (asteroide != null && asteroide.isVisibile())
     asteroide.setVisibile(false);
 
-  proiettile.setInVolo(false);
+  navicella.x = width/2 - navicella.sprite.width/2;
+  navicella.y = height - navicella.sprite.height - 50;
 }
 
 void mostraPunteggio() {

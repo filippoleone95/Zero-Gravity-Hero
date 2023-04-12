@@ -64,5 +64,6 @@ class Proiettile {
   void resetCaricatore() {
     this.caricatore = 0;
     this.setAttivo(false);
+    proiettile.setInVolo(false);
   }
 }
