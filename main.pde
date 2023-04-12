@@ -131,6 +131,7 @@ void draw() {
       powerUp.performaPowerUp();
       suoniAndFX.playPowerUp();
       powerUp.setVisibile(false);
+      powerUp = null;
     }
 
     //TODO BISOGNA RICREARE OGNI TOT TEMPO UN NUOVO OGGETTO ASTEROIDE ASTEROIDE
