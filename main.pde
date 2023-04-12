@@ -297,7 +297,8 @@ void ricomincia() {
   startInvincibile = 0;
   suoniAndFX.playSongGame();
   vite.inGioco = true;
-
+  maxVelocitaMeteorite = 5;
+  velocitaAsteroide = 4;
 
   if (powerUp != null) {
     powerUp.setVisibile(false);
